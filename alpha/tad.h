@@ -18,6 +18,7 @@ struct Pdados
     union UDados UDados;
     struct Pdados *prox;
 };
+typedef struct PDados PDados;
 
 struct Patual{
     struct Pdados *Pdados;

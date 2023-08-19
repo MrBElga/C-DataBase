@@ -1,4 +1,3 @@
-
 // Union data type
 // I INTEGER
 // N NUMERIC
@@ -13,24 +12,24 @@ union UDados
     char valorD[11], ValorC, ValorT[21];
 };
 
-struct Pdados
+struct PDados
 {
     union UDados UDados;
-    struct Pdados *prox;
+    struct PDados *prox;
 };
 typedef struct PDados PDados;
 
-struct Patual{
-    struct Pdados *Pdados;
+struct PAtual{
+    struct PDados *PDados;
 }; 
-typedef struct Patual Patual;
+typedef struct PAtual PAtual;
 
 struct PCampos
 {
     char Campo[30], Tipo, PK;
-    struct Patual *FK;
+    struct PAtual *FK;
     struct Pdados *ValorT;
-    struct PCampos *Patual, *prox;
+    struct PCampos *PAtual, *prox;
 }; 
 typedef struct PCampos PCampos;
 
@@ -50,5 +49,21 @@ struct pontBD
 };
 typedef struct pontBD pontBD;
 
+void iniciarNovaCaixa( PDados *)
 
+Pdados *novaCaixaDados( PDados *nova ) 
+{   
+  
+    
+    
 
+    return *nova;
+}
+
+void CadastrarDados( PDados **pDados, UDados Dados )
+{
+    PDados *nova = (PDados*)malloc(sizeof(PDados));
+    nova = NULL;
+    nova = novaCaixaDados(nova);
+
+}

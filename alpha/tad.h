@@ -19,9 +19,10 @@ struct PDados
 };
 typedef struct PDados PDados;
 
-struct PAtual{
+struct PAtual
+{
     struct PDados *PDados;
-}; 
+};
 typedef struct PAtual PAtual;
 
 struct PCampos
@@ -30,9 +31,8 @@ struct PCampos
     struct PAtual *FK;
     struct Pdados *ValorT;
     struct PCampos *PAtual, *prox;
-}; 
+};
 typedef struct PCampos PCampos;
-
 
 struct PTabelas
 {
@@ -49,21 +49,26 @@ struct pontBD
 };
 typedef struct pontBD pontBD;
 
-void iniciarNovaCaixa( PDados *)
-
-Pdados *novaCaixaDados( PDados *nova ) 
-{   
-  
-    
-    
-
-    return *nova;
-}
-
-void CadastrarDados( PDados **pDados, UDados Dados )
+Pdados *novaCaixaDados()
 {
-    PDados *nova = (PDados*)malloc(sizeof(PDados));
-    nova = NULL;
-    nova = novaCaixaDados(nova);
-
+    PDados *nova = (PDados *)malloc(sizeof(PDados));
+    nova->prox = NULL;
+    return nova;
 }
+
+void CadastrarDados(PDados **pDados, union UDados nDado)
+{
+    PDados *novo = novaCaixaDados();
+    novo->Udados = nDado;
+
+    if (*pDados == NULL)
+    {
+        *pDados = novo;
+    }
+    else
+    {
+        novo->prox = *pDados;
+        *pDados = novo;
+    }
+}
+

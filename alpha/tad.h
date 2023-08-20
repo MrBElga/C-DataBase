@@ -49,9 +49,11 @@ struct pontBD
 };
 typedef struct pontBD pontBD;
 
+
+//cadastro Dados
 Pdados *novaCaixaDados()
 {
-    PDados *nova = (PDados *)malloc(sizeof(PDados));
+    PDados *nova = (PDados*)malloc(sizeof(PDados));
     nova->prox = NULL;
     return nova;
 }
@@ -67,8 +69,42 @@ void CadastrarDados(PDados **pDados, union UDados nDado)
     }
     else
     {
+        //deve inserir no final não no incio
         novo->prox = *pDados;
         *pDados = novo;
     }
 }
 
+//Excluir Dados
+
+//Exibir Dados
+
+//Cadastrar Campos
+pCampos *novoCaixaCampo(char nome[], char Tipo,char FK)
+{
+    PCampos *nova =(PCampos*)malloc(sizeof(PCampos));
+    nova -> prox =  nova -> FK =  nova -> PAtual =   nova -> PDados =NULL;
+    novo -> Tipo = Tipo;
+    novo -> FK = FK;
+    strcpy(novo -> Campo, nome);
+    return(nova);
+}
+
+void CadastrarCampos(PCampos **PCampos,char nome[], char Tipo,char FK)
+{
+    PCampos *novo = novoCaixaCampo(nome,Tipo, FK);
+    if(*PCampos == NULL)
+    {
+        *PCampos = novo;
+    }
+    else
+    {
+
+    }
+}
+
+//Cadastro Tabelas
+void CadastrarTabela()
+{
+
+}

@@ -75,7 +75,10 @@ void CadastrarDados(PCampos *pCampos, union UDados nDado)
 PCampos *novoCaixaCampo(char nome[], char Tipo, char FK)
 {
     PCampos *nova = (PCampos *)malloc(sizeof(PCampos));
-    nova->prox = nova->FK = nova->PAtual = nova->ValorT = NULL;
+    nova->prox = NULL; 
+	nova->FK = NULL;
+	nova->PAtual = NULL;
+	nova->ValorT = NULL;
     nova->Tipo = Tipo;
     nova->PK = FK;
     strcpy(nova->Campo, nome);

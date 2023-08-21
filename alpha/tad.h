@@ -56,25 +56,21 @@ PDados *novaCaixaDados()
 }
 
 
-void CadastrarDados(PDados **pDados, union UDados nDado)
-{
-    PDados *novo = novaCaixaDados();
-    novo->UDados = nDado;
 
-    if (*pDados == NULL)
-    {
-        *pDados = novo;
+void CadastrarDados(PCampos *pCampos, union UDados nDado)
+{
+    PCampos *atualCampo = pCampos;
+    while (atualCampo != NULL && atualCampo->ValorT != NULL) {
+        atualCampo = atualCampo->prox;
     }
-    else
-    {
-        PDados *temp = *pDados;
-        while (temp->prox != NULL)
-        {
-            temp = temp->prox;
-        }
-        temp->prox = novo;
+    
+    if (atualCampo != NULL) {
+        atualCampo->ValorT = novaCaixaDados();
+        atualCampo->ValorT->UDados = nDado;
     }
 }
+
+
 
 PCampos *novoCaixaCampo(char nome[], char Tipo, char FK)
 {
@@ -133,43 +129,37 @@ void CadastrarTabela(PTabelas **Tabela, char nome[])
 }
 
 
-
-void ExibirDados(PDados *pDados)
+void ExibirDados(PCampos *pCampos)
 {
-    PDados *atual = pDados;
-    while (atual != NULL)
+    PCampos *atualCampo = pCampos;
+    while (atualCampo != NULL)
     {
-        printf("Tipo do dado: ");
+        printf("Campo: %s\n", atualCampo->Campo);
+        printf("Tipo: %c\n", atualCampo->Tipo);
 
-        if (atual->UDados.ValorI > 0) {
-            printf("INTEGER\n");
-            printf("Valor: %d\n", atual->UDados.ValorI);
-        }
-        else if (atual->UDados.ValorN > 0) {
-            printf("NUMERIC\n");
-            printf("Valor: %.2f\n", atual->UDados.ValorN);
-        }
-        else if (strlen(atual->UDados.ValorD) > 0) {
-            printf("DATE\n");
-            printf("Valor: %s\n", atual->UDados.ValorD);
-        }
-        else if (atual->UDados.ValorC != '\0') {
-            printf("CHARACTER\n");
-            printf("Valor: %c\n", atual->UDados.ValorC);
-        }
-        else if (strlen(atual->UDados.ValorT) > 0) {
-            printf("CHARACTER (20)\n");
-            printf("Valor: %s\n", atual->UDados.ValorT);
-        }
-        else {
-            printf("NULO\n");
+        // Verificar o tipo do dado e exibir o valor correspondente
+        if (atualCampo->ValorT != NULL) {
+            PDados *dados = atualCampo->ValorT;
+            if (atualCampo->Tipo == 'I') {
+                printf("Valor: %d\n", dados->UDados.ValorI);
+            }
+            else if (atualCampo->Tipo == 'N') {
+                printf("Valor: %.2f\n", dados->UDados.ValorN);
+            }
+            else if (atualCampo->Tipo == 'T') {
+                printf("Valor: %s\n", dados->UDados.ValorT);
+            }
+            else if (atualCampo->Tipo == 'C') {
+                printf("Valor: %c\n", dados->UDados.ValorC);
+            }
         }
 
         printf("\n");
 
-        atual = atual->prox;
+        atualCampo = atualCampo->prox;
     }
 }
+
 
 
 

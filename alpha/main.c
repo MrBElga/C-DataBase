@@ -6,25 +6,33 @@
 #include <string.h>
 
 #include "tad.h"
-
 int main()
 {
-    PDados *dados = NULL;
-    CadastrarDados(&dados, (union UDados){.ValorI = 42});
-    CadastrarDados(&dados, (union UDados){.ValorN = 3.14});
-
     PCampos *campos = NULL;
-    CadastrarCampos(&campos, "Nome", 'C', 'N');
+
+    // Cadastrar campos
+    CadastrarCampos(&campos, "Nome", 'T', 'N');
     CadastrarCampos(&campos, "Idade", 'I', 'N');
 
-    PTabelas *tabelas = NULL;
-    CadastrarTabela(&tabelas, "Pessoas");
-    CadastrarTabela(&tabelas, "Produtos");
+    // Cadastrar mais campos
+    CadastrarCampos(&campos, "Salário", 'N', 'N');
 
-    printf("Dados cadastrados:\n");
-    ExibirDados(dados);
+    // Cadastrar dados nos campos
+    CadastrarDados(campos, (union UDados){.ValorT = "Daniel"});
+    CadastrarDados(campos, (union UDados){.ValorI = 22});
 
-    printf("\nCampos cadastrados:\n");
-    ExibirCampos(campos);   
+    // Cadastrar dados nos novos campos
+    CadastrarDados(campos, (union UDados){.ValorN = 1500.75});
+
+    // Exibir campos e dados
+    printf("Campos cadastrados:\n");
+    ExibirCampos(campos);
+
+    printf("\nDados cadastrados:\n");
+    ExibirDados(campos);
+
+    // Restante do código...
+
     return 0;
 }
+

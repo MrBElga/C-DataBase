@@ -1,37 +1,56 @@
-#include <conio2.h>
 #include <ctype.h>
 #include <locale.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
+#include <windows.h>
+#include "conio2.h" // Certifique-se de incluir a biblioteca corretamente
 #include "tad.h"
+
 int main()
 {
-    PCampos *campos = NULL;
+    // Inicialização das funções da biblioteca conio2
+    clrscr();
 
-    // Cadastrar campos
-    CadastrarCampos(&campos, "Nome", 'T', 'N');
-    CadastrarCampos(&campos, "Idade", 'I', 'N');
+    // Configuração para acentuação
+    setlocale(LC_ALL, "Portuguese");
 
-    // Cadastrar mais campos
-    CadastrarCampos(&campos, "Salário", 'N', 'N');
+    pontBD *bancos = NULL;
 
-    // Cadastrar dados nos campos
-    CadastrarDados(campos, (union UDados){.ValorT = "Daniel"});
-    CadastrarDados(campos, (union UDados){.ValorI = 22});
+    // Cadastrar bancos
+    CadastrarBannco(&bancos, "Banco A");
 
-    // Cadastrar dados nos novos campos
-    CadastrarDados(campos, (union UDados){.ValorN = 1500.75});
+    // Cadastrar tabelas no primeiro banco
+    CadastrarTabela(&(bancos->PTabelas), "Tabela 1");
+    CadastrarTabela(&(bancos->PTabelas), "Tabela 2");
+
+    // Cadastrar campos em uma tabela
+    CadastrarCampoNaTabela(&(bancos->PTabelas), "Tabela 1", "Nome", 'T', 'N');
+    CadastrarCampoNaTabela(&(bancos->PTabelas), "Tabela 1", "Idade", 'I', 'N');
+
+    // Cadastrar campos em outra tabela
+    CadastrarCampoNaTabela(&(bancos->PTabelas), "Tabela 2", "Salário", 'N', 'N');
+
+    // Cadastrar dados em campos
+    PCampos *tabela1Campos = bancos->PTabelas->Patual;
+    CadastrarDadosNaTabela(tabela1Campos, (union UDados){.ValorT = "Daniel"});
+    CadastrarDadosNaTabela(tabela1Campos, (union UDados){.ValorI = 22});
+
+    PCampos *tabela2Campos = bancos->PTabelas->prox->Patual;
+    CadastrarDadosNaTabela(tabela2Campos, (union UDados){.ValorN = 1500.75});
+
+    // Exibir bancos e suas tabelas
+    printf("Bancos cadastrados:\n");
+    ExibirBancos(bancos);
+
+    printf("\nTabelas cadastradas:\n");
+    ExibirTabelas(bancos->PTabelas);
 
     // Exibir campos e dados
-    printf("Campos cadastrados:\n");
-    ExibirCampos(campos);
+    ExibirTodasAsTabelas(bancos);
 
-    printf("\nDados cadastrados:\n");
-    ExibirDados(campos);
-
-    // Restante do código...
+    // Aguarda ação do usuário antes de encerrar
+    getch();
 
     return 0;
 }

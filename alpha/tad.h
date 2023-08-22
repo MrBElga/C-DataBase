@@ -43,34 +43,29 @@ struct pontBD
 };
 typedef struct pontBD pontBD;
 
-PDados *novaCaixaDados()
+PDados *novaCaixaDados(union UDados nDado)
 {
     PDados *nova = (PDados *)malloc(sizeof(PDados));
-    nova->UDados.ValorI = 0;
-    nova->UDados.ValorN = 0.0;
-    nova->UDados.ValorC = '\0';
-    nova->UDados.ValorD[0] = '\0';
-    nova->UDados.ValorT[0] = '\0';
+    nova->UDados = nDado;
     nova->prox = NULL;
     return nova;
 }
 
 
-
-void CadastrarDados(PCampos *pCampos, union UDados nDado)
+void CadastrarDados(PDados **pDados, union UDados nDado)
 {
-    PCampos *atualCampo = pCampos;
-    while (atualCampo != NULL && atualCampo->ValorT != NULL) {
-        atualCampo = atualCampo->prox;
-    }
-    
-    if (atualCampo != NULL) {
-        atualCampo->ValorT = novaCaixaDados();
-        atualCampo->ValorT->UDados = nDado;
+    PDados *novaCaixa = novaCaixaDados(nDado);
+
+    if (*pDados != NULL) {
+        PDados *ultimo = *pDados;
+        while (ultimo->prox != NULL) {
+            ultimo = ultimo->prox;
+        }
+        ultimo->prox = novaCaixa;
+    } else {
+        *pDados = novaCaixa;
     }
 }
-
-
 
 PCampos *novoCaixaCampo(char nome[], char Tipo, char FK)
 {
@@ -103,7 +98,7 @@ void CadastrarCampos(PCampos **pCampos, char nome[], char Tipo, char FK)
     }
 }
 
-PTabelas *novaTabela(char nome[])
+PTabelas *novaCaixaTabela(char nome[])
 {
     PTabelas *nova = (PTabelas *)malloc(sizeof(PTabelas));
     strcpy(nova->Tabela, nome);
@@ -114,7 +109,7 @@ PTabelas *novaTabela(char nome[])
 
 void CadastrarTabela(PTabelas **Tabela, char nome[])
 {
-    PTabelas *nova = novaTabela(nome);
+    PTabelas *nova = novaCaixaTabela(nome);
     if (*Tabela == NULL)
     {
         *Tabela = nova;
@@ -132,6 +127,31 @@ void CadastrarTabela(PTabelas **Tabela, char nome[])
 }
 
 
+//Cadastrar Banco´
+pontBD *NovoCaixaBanco(char nome[])
+{
+    pontBD *novo = (pontBD *)malloc(sizeof(pontBD));
+    strcpy(novo->Banco_Dados, nome);
+    novo->PTabelas = NULL;
+    return novo;
+}
+
+void CadastrarBannco(pontBD **Banco, char nome[])
+{
+    pontBD *novo = NovoCaixaBanco(nome), *temp = *Banco;
+
+    if (*Banco == NULL)
+    {
+        *Banco = novo;
+    }
+    else
+    {
+       
+        printf("delete o banco atual para cadastrar um novo");
+        getchar();
+    }
+}
+
 void ExibirDados(PCampos *pCampos)
 {
     PCampos *atualCampo = pCampos;
@@ -139,8 +159,6 @@ void ExibirDados(PCampos *pCampos)
     {
         printf("Campo: %s\n", atualCampo->Campo);
         printf("Tipo: %c\n", atualCampo->Tipo);
-
-        // Verificar o tipo do dado e exibir o valor correspondente
         if (atualCampo->ValorT != NULL) {
             PDados *dados = atualCampo->ValorT;
             if (atualCampo->Tipo == 'I') {
@@ -156,16 +174,10 @@ void ExibirDados(PCampos *pCampos)
                 printf("Valor: %c\n", dados->UDados.ValorC);
             }
         }
-
         printf("\n");
-
         atualCampo = atualCampo->prox;
     }
 }
-
-
-
-
 
 void ExibirCampos(PCampos *pCampos)
 {
@@ -175,7 +187,88 @@ void ExibirCampos(PCampos *pCampos)
         printf("Campo: %s\n", atual->Campo);
         printf("Tipo: %c\n", atual->Tipo);
         printf("PK: %c\n\n", atual->PK);
-
         atual = atual->prox;
     }
+}
+
+// Função para exibir todos os bancos
+void ExibirBancos(pontBD *bancos)
+{
+    pontBD *atualBanco = bancos;
+    printf("Banco: %s\n", atualBanco->Banco_Dados);
+    
+    
+}
+
+// Função para exibir todas as tabelas de um banco
+void ExibirTabelas(PTabelas *tabelas)
+{
+    PTabelas *atualTabela = tabelas;
+    while (atualTabela != NULL)
+    {
+        printf("Tabela: %s\n", atualTabela->Tabela);
+        atualTabela = atualTabela->prox;
+    }
+}
+
+// Função para exibir campos de uma tabela
+void ExibirCamposTabela(PCampos *campos)
+{
+    ExibirCampos(campos);
+}
+
+// Função para exibir todos os dados de uma tabela
+void ExibirDadosTabela(PCampos *campos)
+{
+    ExibirDados(campos);
+}
+
+// Função para cadastrar um novo campo em uma tabela
+void CadastrarCampoNaTabela(PTabelas **Tabela, char nomeTabela[], char nomeCampo[], char Tipo, char FK)
+{
+    PTabelas *tabelaAlvo = *Tabela;
+    while (tabelaAlvo != NULL && strcmp(tabelaAlvo->Tabela, nomeTabela) != 0) {
+        tabelaAlvo = tabelaAlvo->prox;
+    }
+
+    if (tabelaAlvo != NULL) {
+        CadastrarCampos(&(tabelaAlvo->Patual), nomeCampo, Tipo, FK);
+    }
+}
+
+// Função para cadastrar dados em um campo de uma tabela
+void CadastrarDadosNaTabela(PCampos *campos, union UDados nDado)
+{
+    CadastrarDados(&(campos->ValorT), nDado);
+}
+
+// Função para exibir campos e dados de uma tabela específica
+void ExibirTabela(PTabelas *tabelas, char nomeTabela[])
+{
+    PTabelas *tabelaAlvo = tabelas;
+    while (tabelaAlvo != NULL && strcmp(tabelaAlvo->Tabela, nomeTabela) != 0) {
+        tabelaAlvo = tabelaAlvo->prox;
+    }
+
+    if (tabelaAlvo != NULL) {
+        printf("Tabela: %s\n", tabelaAlvo->Tabela);
+        ExibirCamposTabela(tabelaAlvo->Patual);
+        ExibirDadosTabela(tabelaAlvo->Patual);
+    }
+}
+
+// Função para exibir todos os detalhes das tabelas
+void ExibirTodasAsTabelas(pontBD *bancos)
+{
+    pontBD *atualBanco = bancos;
+    PTabelas *atualTabela = atualBanco->PTabelas;
+  
+        printf("Banco: %s\n", atualBanco->Banco_Dados);
+      
+        while (atualTabela != NULL)
+        {
+            ExibirTabela(bancos->PTabelas, atualTabela->Tabela);
+            atualTabela = atualTabela->prox;
+        }
+   
 }

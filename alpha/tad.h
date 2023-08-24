@@ -43,6 +43,9 @@ struct pontBD
 };
 typedef struct pontBD pontBD;
 
+// Cadastros
+
+// cadastra os dados do banco
 PDados *novaCaixaDados(union UDados nDado)
 {
     PDados *nova = (PDados *)malloc(sizeof(PDados));
@@ -51,29 +54,33 @@ PDados *novaCaixaDados(union UDados nDado)
     return nova;
 }
 
-
 void CadastrarDados(PDados **pDados, union UDados nDado)
 {
     PDados *novaCaixa = novaCaixaDados(nDado);
 
-    if (*pDados != NULL) {
+    if (*pDados != NULL)
+    {
         PDados *ultimo = *pDados;
-        while (ultimo->prox != NULL) {
+        while (ultimo->prox != NULL)
+        {
             ultimo = ultimo->prox;
         }
         ultimo->prox = novaCaixa;
-    } else {
+    }
+    else
+    {
         *pDados = novaCaixa;
     }
 }
 
+// cadastra os campos do banco
 PCampos *novoCaixaCampo(char nome[], char Tipo, char FK)
 {
     PCampos *nova = (PCampos *)malloc(sizeof(PCampos));
-    nova->prox = NULL; 
-	nova->FK = NULL;
-	nova->PAtual = NULL;
-	nova->ValorT = NULL;
+    nova->prox = NULL;
+    nova->FK = NULL;
+    nova->PAtual = NULL;
+    nova->ValorT = NULL;
     nova->Tipo = Tipo;
     nova->PK = FK;
     strcpy(nova->Campo, nome);
@@ -98,6 +105,7 @@ void CadastrarCampos(PCampos **pCampos, char nome[], char Tipo, char FK)
     }
 }
 
+// Cadastro tabelas do vanco
 PTabelas *novaCaixaTabela(char nome[])
 {
     PTabelas *nova = (PTabelas *)malloc(sizeof(PTabelas));
@@ -126,8 +134,7 @@ void CadastrarTabela(PTabelas **Tabela, char nome[])
     }
 }
 
-
-//Cadastrar Banco´
+// Cadastrar Banco
 pontBD *NovoCaixaBanco(char nome[])
 {
     pontBD *novo = (pontBD *)malloc(sizeof(pontBD));
@@ -146,12 +153,13 @@ void CadastrarBannco(pontBD **Banco, char nome[])
     }
     else
     {
-       
+
         printf("delete o banco atual para cadastrar um novo");
         getchar();
     }
 }
 
+// exibe os dados
 void ExibirDados(PCampos *pCampos)
 {
     PCampos *atualCampo = pCampos;
@@ -159,18 +167,23 @@ void ExibirDados(PCampos *pCampos)
     {
         printf("Campo: %s\n", atualCampo->Campo);
         printf("Tipo: %c\n", atualCampo->Tipo);
-        if (atualCampo->ValorT != NULL) {
+        if (atualCampo->ValorT != NULL)
+        {
             PDados *dados = atualCampo->ValorT;
-            if (atualCampo->Tipo == 'I') {
+            if (atualCampo->Tipo == 'I')
+            {
                 printf("Valor: %d\n", dados->UDados.ValorI);
             }
-            else if (atualCampo->Tipo == 'N') {
+            else if (atualCampo->Tipo == 'N')
+            {
                 printf("Valor: %.2f\n", dados->UDados.ValorN);
             }
-            else if (atualCampo->Tipo == 'T') {
+            else if (atualCampo->Tipo == 'T')
+            {
                 printf("Valor: %s\n", dados->UDados.ValorT);
             }
-            else if (atualCampo->Tipo == 'C') {
+            else if (atualCampo->Tipo == 'C')
+            {
                 printf("Valor: %c\n", dados->UDados.ValorC);
             }
         }
@@ -179,6 +192,7 @@ void ExibirDados(PCampos *pCampos)
     }
 }
 
+// exibe os campos
 void ExibirCampos(PCampos *pCampos)
 {
     PCampos *atual = pCampos;
@@ -196,8 +210,6 @@ void ExibirBancos(pontBD *bancos)
 {
     pontBD *atualBanco = bancos;
     printf("Banco: %s\n", atualBanco->Banco_Dados);
-    
-    
 }
 
 // Função para exibir todas as tabelas de um banco
@@ -227,11 +239,13 @@ void ExibirDadosTabela(PCampos *campos)
 void CadastrarCampoNaTabela(PTabelas **Tabela, char nomeTabela[], char nomeCampo[], char Tipo, char FK)
 {
     PTabelas *tabelaAlvo = *Tabela;
-    while (tabelaAlvo != NULL && strcmp(tabelaAlvo->Tabela, nomeTabela) != 0) {
+    while (tabelaAlvo != NULL && strcmp(tabelaAlvo->Tabela, nomeTabela) != 0)
+    {
         tabelaAlvo = tabelaAlvo->prox;
     }
 
-    if (tabelaAlvo != NULL) {
+    if (tabelaAlvo != NULL)
+    {
         CadastrarCampos(&(tabelaAlvo->Patual), nomeCampo, Tipo, FK);
     }
 }
@@ -246,11 +260,13 @@ void CadastrarDadosNaTabela(PCampos *campos, union UDados nDado)
 void ExibirTabela(PTabelas *tabelas, char nomeTabela[])
 {
     PTabelas *tabelaAlvo = tabelas;
-    while (tabelaAlvo != NULL && strcmp(tabelaAlvo->Tabela, nomeTabela) != 0) {
+    while (tabelaAlvo != NULL && strcmp(tabelaAlvo->Tabela, nomeTabela) != 0)
+    {
         tabelaAlvo = tabelaAlvo->prox;
     }
 
-    if (tabelaAlvo != NULL) {
+    if (tabelaAlvo != NULL)
+    {
         printf("Tabela: %s\n", tabelaAlvo->Tabela);
         ExibirCamposTabela(tabelaAlvo->Patual);
         ExibirDadosTabela(tabelaAlvo->Patual);
@@ -262,13 +278,16 @@ void ExibirTodasAsTabelas(pontBD *bancos)
 {
     pontBD *atualBanco = bancos;
     PTabelas *atualTabela = atualBanco->PTabelas;
-  
-        printf("Banco: %s\n", atualBanco->Banco_Dados);
-      
-        while (atualTabela != NULL)
-        {
-            ExibirTabela(bancos->PTabelas, atualTabela->Tabela);
-            atualTabela = atualTabela->prox;
-        }
-   
+
+    printf("Banco: %s\n", atualBanco->Banco_Dados);
+
+    while (atualTabela != NULL)
+    {
+        ExibirTabela(bancos->PTabelas, atualTabela->Tabela);
+        atualTabela = atualTabela->prox;
+    }
 }
+
+// Buscas
+
+// Busca Tabela em um banco

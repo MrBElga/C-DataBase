@@ -291,3 +291,9 @@ void ExibirTodasAsTabelas(pontBD *bancos)
 // Buscas
 
 // Busca Tabela em um banco
+
+// Alterar
+
+// Deletar
+
+// arquivo texto

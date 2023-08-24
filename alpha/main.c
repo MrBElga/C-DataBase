@@ -4,17 +4,13 @@
 #include <stdlib.h>
 #include <string.h>
 #include <windows.h>
-#include "conio2.h" // Certifique-se de incluir a biblioteca corretamente
 #include "tad.h"
 
 int main()
 {
-    // Inicialização das funções da biblioteca conio2
+   
     clrscr();
-
-    // Configuração para acentuação
     setlocale(LC_ALL, "Portuguese");
-
     pontBD *bancos = NULL;
 
     // Cadastrar bancos

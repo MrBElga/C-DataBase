@@ -159,6 +159,49 @@ void CadastrarBannco(pontBD **Banco, char nome[])
     }
 }
 
+// Função para cadastrar um novo campo em uma tabela
+void CadastrarCampoNaTabela(PTabelas **Tabela, char nomeTabela[], char nomeCampo[], char Tipo, char FK)
+{
+    PTabelas *tabelaAlvo = *Tabela;
+    while (tabelaAlvo != NULL && strcmp(tabelaAlvo->Tabela, nomeTabela) != 0)
+    {
+        tabelaAlvo = tabelaAlvo->prox;
+    }
+
+    if (tabelaAlvo != NULL)
+    {
+        CadastrarCampos(&(tabelaAlvo->Patual), nomeCampo, Tipo, FK);
+    }
+}
+
+// Função para cadastrar dados em um campo de uma tabela
+void CadastrarDadosNaTabela(PCampos *campos, union UDados nDado)
+{
+    CadastrarDados(&(campos->ValorT), nDado);
+}
+
+//Buscas 
+
+//Dados
+//Campos
+//Tabelas
+//Banco
+//FK
+
+//Alterar
+
+//Dados
+//Campos
+//Tabelas
+//Banco
+
+//Deletar
+
+//Dados
+//Campos
+//Tabelas
+//Banco
+
 // exibe os dados
 void ExibirDados(PCampos *pCampos)
 {
@@ -235,27 +278,6 @@ void ExibirDadosTabela(PCampos *campos)
     ExibirDados(campos);
 }
 
-// Função para cadastrar um novo campo em uma tabela
-void CadastrarCampoNaTabela(PTabelas **Tabela, char nomeTabela[], char nomeCampo[], char Tipo, char FK)
-{
-    PTabelas *tabelaAlvo = *Tabela;
-    while (tabelaAlvo != NULL && strcmp(tabelaAlvo->Tabela, nomeTabela) != 0)
-    {
-        tabelaAlvo = tabelaAlvo->prox;
-    }
-
-    if (tabelaAlvo != NULL)
-    {
-        CadastrarCampos(&(tabelaAlvo->Patual), nomeCampo, Tipo, FK);
-    }
-}
-
-// Função para cadastrar dados em um campo de uma tabela
-void CadastrarDadosNaTabela(PCampos *campos, union UDados nDado)
-{
-    CadastrarDados(&(campos->ValorT), nDado);
-}
-
 // Função para exibir campos e dados de uma tabela específica
 void ExibirTabela(PTabelas *tabelas, char nomeTabela[])
 {
@@ -287,26 +309,3 @@ void ExibirTodasAsTabelas(pontBD *bancos)
         atualTabela = atualTabela->prox;
     }
 }
-
-//Buscas 
-
-//Dados
-//Campos
-//Tabelas
-//Banco
-//FK
-
-//Alterar
-
-//Dados
-//Campos
-//Tabelas
-//Banco
-
-//Deletar
-
-//Dados
-//Campos
-//Tabelas
-//Banco
-

@@ -145,7 +145,7 @@ pontBD *NovoCaixaBanco(char nome[])
 
 void CadastrarBannco(pontBD **Banco, char nome[])
 {
-    pontBD *novo = NovoCaixaBanco(nome), *temp = *Banco;
+    pontBD *novo = NovoCaixaBanco(nome)/* ,*temp = *Banco */;
 
     if (*Banco == NULL)
     {

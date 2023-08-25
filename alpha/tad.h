@@ -272,3 +272,26 @@ void ExibirTodasAsTabelas(pontBD *bancos)
         }
    
 }
+
+
+//Buscas 
+
+//Dados
+//Campos
+//Tabelas
+//Banco
+//FK
+
+//Alterar
+
+//Dados
+//Campos
+//Tabelas
+//Banco
+
+//Deletar
+
+//Dados
+//Campos
+//Tabelas
+//Banco

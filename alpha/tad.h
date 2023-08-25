@@ -43,6 +43,33 @@ struct pontBD
 };
 typedef struct pontBD pontBD;
 
+
+//Buscas 
+
+//Dados
+Pdados *BuscaDados()
+{
+
+}
+//Campos
+PCampos *BuscaCampos()
+{
+
+}
+//Tabelas
+PTabelas *BuscaTabelas()
+{
+
+}
+//Banco
+pontBD *BuscaBancos()
+{
+    
+}
+//FK
+
+
+
 // Cadastros
 
 // cadastra os dados do banco
@@ -179,14 +206,6 @@ void CadastrarDadosNaTabela(PCampos *campos, union UDados nDado)
 {
     CadastrarDados(&(campos->ValorT), nDado);
 }
-
-//Buscas 
-
-//Dados
-//Campos
-//Tabelas
-//Banco
-//FK
 
 //Alterar
 

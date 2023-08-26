@@ -54,7 +54,7 @@ Pdados *BuscaDados()
 //Campos
 PCampos *BuscaCampos()
 {
-
+    if()
 }
 //Tabelas
 PTabelas *BuscaTabelas()

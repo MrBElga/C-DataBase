@@ -44,6 +44,7 @@ struct pontBD
 typedef struct pontBD pontBD;
 
 
+
 //Buscas 
 
 //Dados
@@ -72,7 +73,7 @@ pontBD *BuscaBancos()
 
 // Cadastros
 
-// cadastra os dados do banco
+// cadastra os dados do banco [OK]
 PDados *novaCaixaDados(union UDados nDado)
 {
     PDados *nova = (PDados *)malloc(sizeof(PDados));
@@ -100,8 +101,8 @@ void CadastrarDados(PDados **pDados, union UDados nDado)
     }
 }
 
-// cadastra os campos do banco
-PCampos *novoCaixaCampo(char nome[], char Tipo, char FK)
+// cadastra os campos do banco [OK/2] (Falta a Foreign Key, possivelmente passar o endeço que a FK-> vai guardar)
+PCampos *novoCaixaCampo(char nome[], char Tipo, char PK)
 {
     PCampos *nova = (PCampos *)malloc(sizeof(PCampos));
     nova->prox = NULL;
@@ -109,14 +110,14 @@ PCampos *novoCaixaCampo(char nome[], char Tipo, char FK)
     nova->PAtual = NULL;
     nova->ValorT = NULL;
     nova->Tipo = Tipo;
-    nova->PK = FK;
+    nova->PK = PK;
     strcpy(nova->Campo, nome);
     return nova;
 }
 
-void CadastrarCampos(PCampos **pCampos, char nome[], char Tipo, char FK)
+void CadastrarCampos(PCampos **pCampos, char nome[], char Tipo, char PK)
 {
-    PCampos *novo = novoCaixaCampo(nome, Tipo, FK);
+    PCampos *novo = novoCaixaCampo(nome, Tipo, PK);
     if (*pCampos == NULL)
     {
         *pCampos = novo;
@@ -132,7 +133,7 @@ void CadastrarCampos(PCampos **pCampos, char nome[], char Tipo, char FK)
     }
 }
 
-// Cadastro tabelas do vanco
+// Cadastro tabelas do Banco [OK]
 PTabelas *novaCaixaTabela(char nome[])
 {
     PTabelas *nova = (PTabelas *)malloc(sizeof(PTabelas));
@@ -161,7 +162,7 @@ void CadastrarTabela(PTabelas **Tabela, char nome[])
     }
 }
 
-// Cadastrar Banco
+// Cadastrar Banco [OK]
 pontBD *NovoCaixaBanco(char nome[])
 {
     pontBD *novo = (pontBD *)malloc(sizeof(pontBD));
@@ -180,8 +181,8 @@ void CadastrarBannco(pontBD **Banco, char nome[])
     }
     else
     {
-
-        printf("delete o banco atual para cadastrar um novo");
+        printf("no momento só é possivel cadastrar um banco de dados\n");
+        printf("delete o banco atual para cadastrar um novo\n");
         getchar();
     }
 }

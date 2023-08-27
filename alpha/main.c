@@ -1,74 +1,52 @@
-#include <ctype.h>
-#include <locale.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <windows.h>
 #include "tad.h"
 
 int main()
 {
+    pontBD *banco = NULL;
+    CadastrarBannco(&banco, "MeuBanco");
 
-    setlocale(LC_ALL, "Portuguese");
-    pontBD *bancos = NULL;
+    CadastrarTabela(&(banco->PTabelas), "Clientes");
 
-    // Cadastrar bancos
-    CadastrarBannco(&bancos, "db_locutora");
+    CadastrarCampoNaTabela(&(banco->PTabelas), "Clientes", "ID", 'I', 'S');
+    CadastrarCampoNaTabela(&(banco->PTabelas), "Clientes", "Nome", 'T', 'N');
+    CadastrarCampoNaTabela(&(banco->PTabelas), "Clientes", "Idade", 'I', 'N');
 
-    // Cadastrar tabelas no primeiro banco
-    CadastrarTabela(&(bancos->PTabelas), "cliente");
-    CadastrarTabela(&(bancos->PTabelas), "aluguel");
-    CadastrarTabela(&(bancos->PTabelas), "veiculo");
+    union UDados dado0;
+    dado0.ValorI = 1;
+    CadastrarDadosNaTabela(buscaCampoPorNome(banco->PTabelas->Patual, "ID"), 'I', dado0);
 
-    // Cadastrar campos tabela cliente
-    CadastrarCampoNaTabela(&(bancos->PTabelas), "cliente", "id_cliente", 'I', 'N');
-    CadastrarCampoNaTabela(&(bancos->PTabelas), "cliente", "nome", 'T', 'N');
-    CadastrarCampoNaTabela(&(bancos->PTabelas), "cliente", "cpf", 'T', 'N');
-    CadastrarCampoNaTabela(&(bancos->PTabelas), "cliente", "celular", 'T', 'N');
+    union UDados dado1;
+    dado1.ValorI = 25;
+    printf("\n%d\n", dado1.ValorI);
+    CadastrarDadosNaTabela(buscaCampoPorNome(banco->PTabelas->Patual->prox, "Idade"), 'I', dado1);
 
-    // Cadastrar campos tabela aluguel
-    CadastrarCampoNaTabela(&(bancos->PTabelas), "aluguel", "id_aluguel", 'I', 'N');
-    CadastrarCampoNaTabela(&(bancos->PTabelas), "aluguel", "id_client", 'I', 'S');
-    CadastrarCampoNaTabela(&(bancos->PTabelas), "aluguel", "id_veiculo", 'I', 'S');
-    CadastrarCampoNaTabela(&(bancos->PTabelas), "aluguel", "dt_saida", 'D', 'N');
+    union UDados dado2;
+    strcpy(dado2.ValorT, "Joao");
+    printf("\n%s\n", dado2.ValorT);
+    CadastrarDadosNaTabela(buscaCampoPorNome(banco->PTabelas->Patual->prox, "Nome"), 'T', dado2);
 
-     // Cadastrar campos tabela veiculo
-    CadastrarCampoNaTabela(&(bancos->PTabelas), "veiculo", "id_veiculo", 'I', 'N');
-    CadastrarCampoNaTabela(&(bancos->PTabelas), "veiculo", "marca", 'T', 'S');
-    CadastrarCampoNaTabela(&(bancos->PTabelas), "veiculo", "modelo", 'T', 'S');
-    CadastrarCampoNaTabela(&(bancos->PTabelas), "veiculo", "placa", 'T', 'N');
+    printf("\nExibindo Dados\n");
+    ExibirTodasAsTabelas(banco);
 
-    // Cadastrar dados em campos cliente
-    PCampos *tabela1Campos = bancos->PTabelas->Patual;
-    CadastrarDadosNaTabela(tabela1Campos, (union UDados){.ValorI = 1});
-    CadastrarDadosNaTabela(tabela1Campos, (union UDados){.ValorI = 2});
-    CadastrarDadosNaTabela(tabela1Campos, (union UDados){.ValorI = 3});
+    union UDados buscaDado;
+    buscaDado.ValorI = 25;
 
-    CadastrarDadosNaTabela(tabela1Campos, (union UDados){.ValorT = "Jose da Silva"});
-    CadastrarDadosNaTabela(tabela1Campos, (union UDados){.ValorT = "Ana Maria"});
-    CadastrarDadosNaTabela(tabela1Campos, (union UDados){.ValorT = "Joao Paulo"});
+    PDados *resultadoBusca = BuscaDados(buscaCampoPorNome(banco->PTabelas->Patual, "Idade")->ValorT, buscaDado);
 
-    CadastrarDadosNaTabela(tabela1Campos, (union UDados){.ValorT = "111.111.111-11"});
-    CadastrarDadosNaTabela(tabela1Campos, (union UDados){.ValorT = "222.222.222-22"});
-    CadastrarDadosNaTabela(tabela1Campos, (union UDados){.ValorT = "333.333.333-33"});
+    if (resultadoBusca != NULL)
+    {
+        printf("\nDado encontrado:\n");
+        printf("Campo: Idade\n");
+        printf("Valor: %d\n", resultadoBusca->UDados.ValorI);
+    }
+    else
+    {
+        printf("\nDado não encontrado.\n");
+    }
 
-    CadastrarDadosNaTabela(tabela1Campos, (union UDados){.ValorT = "91111-1111"});
-    CadastrarDadosNaTabela(tabela1Campos, (union UDados){.ValorT = "92222-2222"});
-    CadastrarDadosNaTabela(tabela1Campos, (union UDados){.ValorT = "93333-3333"});
-
-    // Exibir bancos e suas tabelas
-    printf("Bancos cadastrados:\n");
-    ExibirBancos(bancos);
-
-    printf("\nTabelas cadastradas:\n");
-    ExibirTabelas(bancos->PTabelas);
-
-    // Exibir campos e dados
-    ExibirTodasAsTabelas(bancos);
-
-    // Aguarda a��o do usu�rio antes de encerrar
-    getchar();
 
     return 0;
 }
-

@@ -48,25 +48,72 @@ typedef struct pontBD pontBD;
 //Buscas 
 
 //Dados
-Pdados *BuscaDados()
+PDados *BuscaDados(PDados *pDados, union UDados nDado)
 {
-
+    PDados *aux = pDados;
+    while (aux != NULL)
+    {
+        if ((aux->UDados.ValorI == nDado.ValorI) || (aux->UDados.ValorN == nDado.ValorN) || (strcmp(aux->UDados.ValorD, nDado.ValorD) == 0) || (aux->UDados.ValorC == nDado.ValorC) || (strcmp(aux->UDados.ValorT, nDado.ValorT) == 0))
+        {
+            return aux; 
+        }
+        aux = aux->prox;
+    }
+    return NULL;
 }
+
+
 //Campos
-PCampos *BuscaCampos()
+PCampos *buscaCampoPorNome(PCampos *campos, char nomeCampo[])
 {
-    if()
+    PCampos *atualCampo = campos;
+    
+    while (atualCampo != NULL)
+    {
+        if (strcmp(atualCampo->Campo, nomeCampo) == 0)
+        {
+            return atualCampo; 
+        }
+        atualCampo = atualCampo->prox;
+    }
+    
+    return NULL; 
 }
-//Tabelas
-PTabelas *BuscaTabelas()
-{
 
+//Tabelas
+PTabelas *buscaTabelaPorNome(pontBD *banco, char nomeTabela[])
+{
+    PTabelas *atualTabela = banco->PTabelas;
+    
+    while (atualTabela != NULL)
+    {
+        if (strcmp(atualTabela->Tabela, nomeTabela) == 0)
+        {
+            return atualTabela; 
+        }
+        atualTabela = atualTabela->prox;
+    }
+    
+    return NULL;
 }
 //Banco
-pontBD *BuscaBancos()
+pontBD *buscaBancoPorNome(pontBD *listaBancos, char nomeBanco[])
 {
+    pontBD *atualBanco = listaBancos;
     
+    while (atualBanco != NULL)
+    {
+        if (strcmp(atualBanco->Banco_Dados, nomeBanco) == 0)
+        {
+            return atualBanco; 
+        }
+        // adaptar para ter N bancos
+        atualBanco = NULL;
+    }
+    
+    return NULL; 
 }
+
 //FK
 
 
@@ -82,7 +129,7 @@ PDados *novaCaixaDados(union UDados nDado)
     return nova;
 }
 
-void CadastrarDados(PDados **pDados, union UDados nDado)
+void CadastrarDados(PDados **pDados, char tipo, union UDados nDado)
 {
     PDados *novaCaixa = novaCaixaDados(nDado);
 
@@ -203,10 +250,12 @@ void CadastrarCampoNaTabela(PTabelas **Tabela, char nomeTabela[], char nomeCampo
 }
 
 // Função para cadastrar dados em um campo de uma tabela
-void CadastrarDadosNaTabela(PCampos *campos, union UDados nDado)
+void CadastrarDadosNaTabela(PCampos *campos, char tipo, union UDados nDado)
 {
-    CadastrarDados(&(campos->ValorT), nDado);
+    CadastrarDados(&(campos->ValorT), tipo, nDado);
 }
+
+
 
 //Alterar
 
@@ -233,20 +282,25 @@ void ExibirDados(PCampos *pCampos)
         if (atualCampo->ValorT != NULL)
         {
             PDados *dados = atualCampo->ValorT;
+      
             if (atualCampo->Tipo == 'I')
             {
+                      printf("I");
                 printf("Valor: %d\n", dados->UDados.ValorI);
             }
             else if (atualCampo->Tipo == 'N')
             {
+                      printf("N");
                 printf("Valor: %.2f\n", dados->UDados.ValorN);
             }
             else if (atualCampo->Tipo == 'T')
             {
+                      printf("T");
                 printf("Valor: %s\n", dados->UDados.ValorT);
             }
             else if (atualCampo->Tipo == 'C')
             {
+                      printf("C");
                 printf("Valor: %c\n", dados->UDados.ValorC);
             }
         }

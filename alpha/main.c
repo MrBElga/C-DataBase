@@ -21,12 +21,12 @@ int main()
     union UDados dado1;
     dado1.ValorI = 25;
     printf("\n%d\n", dado1.ValorI);
-    CadastrarDadosNaTabela(buscaCampoPorNome(banco->PTabelas->Patual->prox, "Idade"), 'I', dado1);
+    CadastrarDadosNaTabela(buscaCampoPorNome(banco->PTabelas->Patual, "Idade"), 'I', dado1);
 
     union UDados dado2;
     strcpy(dado2.ValorT, "Joao");
     printf("\n%s\n", dado2.ValorT);
-    CadastrarDadosNaTabela(buscaCampoPorNome(banco->PTabelas->Patual->prox, "Nome"), 'T', dado2);
+    CadastrarDadosNaTabela(buscaCampoPorNome(banco->PTabelas->Patual, "Nome"), 'T', dado2);
 
     printf("\nExibindo Dados\n");
     ExibirTodasAsTabelas(banco);

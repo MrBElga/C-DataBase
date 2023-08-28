@@ -282,27 +282,27 @@ void ExibirDados(PCampos *pCampos)
         if (atualCampo->ValorT != NULL)
         {
             PDados *dados = atualCampo->ValorT;
-      
-            if (atualCampo->Tipo == 'I')
-            {
-                      printf("I");
-                printf("Valor: %d\n", dados->UDados.ValorI);
-            }
-            else if (atualCampo->Tipo == 'N')
-            {
-                      printf("N");
-                printf("Valor: %.2f\n", dados->UDados.ValorN);
-            }
-            else if (atualCampo->Tipo == 'T')
-            {
-                      printf("T");
-                printf("Valor: %s\n", dados->UDados.ValorT);
-            }
-            else if (atualCampo->Tipo == 'C')
-            {
-                      printf("C");
-                printf("Valor: %c\n", dados->UDados.ValorC);
-            }
+      		while(dados != NULL)
+      		{
+			 
+	            if (atualCampo->Tipo == 'I')
+	            {   
+	                printf("Valor: %d\n", dados->UDados.ValorI);
+	            }
+	            else if (atualCampo->Tipo == 'N')
+	            {         
+	                printf("Valor: %.2f\n", dados->UDados.ValorN);
+	            }
+	            else if (atualCampo->Tipo == 'T')
+	            {
+	                printf("Valor: %s\n", dados->UDados.ValorT);
+	            }
+	            else if (atualCampo->Tipo == 'C')
+	            {
+	                printf("Valor: %c\n", dados->UDados.ValorC);
+	            }
+	            dados = dados->prox;
+	        }
         }
         printf("\n");
         atualCampo = atualCampo->prox;
@@ -340,17 +340,6 @@ void ExibirTabelas(PTabelas *tabelas)
     }
 }
 
-// Função para exibir campos de uma tabela
-void ExibirCamposTabela(PCampos *campos)
-{
-    ExibirCampos(campos);
-}
-
-// Função para exibir todos os dados de uma tabela
-void ExibirDadosTabela(PCampos *campos)
-{
-    ExibirDados(campos);
-}
 
 // Função para exibir campos e dados de uma tabela específica
 void ExibirTabela(PTabelas *tabelas, char nomeTabela[])
@@ -364,8 +353,10 @@ void ExibirTabela(PTabelas *tabelas, char nomeTabela[])
     if (tabelaAlvo != NULL)
     {
         printf("Tabela: %s\n", tabelaAlvo->Tabela);
-        ExibirCamposTabela(tabelaAlvo->Patual);
-        ExibirDadosTabela(tabelaAlvo->Patual);
+        ExibirCampos(tabelaAlvo->Patual);
+        //ExibirCamposTabela();
+         ExibirDados(tabelaAlvo->Patual); 
+        //ExibirDadosTabela();
     }
 }
 

@@ -15,24 +15,39 @@ int main()
     CadastrarCampoNaTabela(&(banco->PTabelas), "Clientes", "Idade", 'I', 'N');
 
     union UDados dado0;
+    dado0.ValorI = 0;
+    CadastrarDadosNaTabela(buscaCampoPorNome(banco->PTabelas->Patual, "ID"), 'I', dado0);
+
+    dado0.ValorI = 25;
+    CadastrarDadosNaTabela(buscaCampoPorNome(banco->PTabelas->Patual, "Idade"), 'I', dado0);
+
+ 
+    strcpy(dado0.ValorT, "Joao");
+    CadastrarDadosNaTabela(buscaCampoPorNome(banco->PTabelas->Patual, "Nome"), 'T', dado0);
+
     dado0.ValorI = 1;
     CadastrarDadosNaTabela(buscaCampoPorNome(banco->PTabelas->Patual, "ID"), 'I', dado0);
 
-    union UDados dado1;
-    dado1.ValorI = 25;
-    printf("\n%d\n", dado1.ValorI);
-    CadastrarDadosNaTabela(buscaCampoPorNome(banco->PTabelas->Patual, "Idade"), 'I', dado1);
+    dado0.ValorI = 31;
+    CadastrarDadosNaTabela(buscaCampoPorNome(banco->PTabelas->Patual, "Idade"), 'I', dado0);
 
-    union UDados dado2;
-    strcpy(dado2.ValorT, "Joao");
-    printf("\n%s\n", dado2.ValorT);
-    CadastrarDadosNaTabela(buscaCampoPorNome(banco->PTabelas->Patual, "Nome"), 'T', dado2);
+    strcpy(dado0.ValorT, "Jerco");
+    CadastrarDadosNaTabela(buscaCampoPorNome(banco->PTabelas->Patual, "Nome"), 'T', dado0);
+
+    dado0.ValorI = 2;
+    CadastrarDadosNaTabela(buscaCampoPorNome(banco->PTabelas->Patual, "ID"), 'I', dado0);
+
+    dado0.ValorI = 50;
+    CadastrarDadosNaTabela(buscaCampoPorNome(banco->PTabelas->Patual, "Idade"), 'I', dado0);
+
+    strcpy(dado0.ValorT, "Raposo");
+    CadastrarDadosNaTabela(buscaCampoPorNome(banco->PTabelas->Patual, "Nome"), 'T', dado0);
 
     printf("\nExibindo Dados\n");
     ExibirTodasAsTabelas(banco);
 
     union UDados buscaDado;
-    buscaDado.ValorI = 25;
+    buscaDado.ValorI = 31;
 
     PDados *resultadoBusca = BuscaDados(buscaCampoPorNome(banco->PTabelas->Patual, "Idade")->ValorT, buscaDado);
 
@@ -46,7 +61,5 @@ int main()
     {
         printf("\nDado não encontrado.\n");
     }
-
-
     return 0;
 }

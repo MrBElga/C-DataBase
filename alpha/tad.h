@@ -250,9 +250,9 @@ void CadastrarCampoNaTabela(PTabelas **Tabela, char nomeTabela[], char nomeCampo
 }
 
 // Função para cadastrar dados em um campo de uma tabela
-void CadastrarDadosNaTabela(PCampos *campos, char tipo, union UDados nDado)
+void CadastrarDadosNaTabela(PCampos *campos, union UDados nDado)
 {
-    CadastrarDados(&(campos->ValorT), tipo, nDado);
+    CadastrarDados(&(campos->ValorT), nDado);
 }
 
 

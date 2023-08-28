@@ -129,7 +129,7 @@ PDados *novaCaixaDados(union UDados nDado)
     return nova;
 }
 
-void CadastrarDados(PDados **pDados, char tipo, union UDados nDado)
+void CadastrarDados(PDados **pDados, union UDados nDado)
 {
     PDados *novaCaixa = novaCaixaDados(nDado);
 

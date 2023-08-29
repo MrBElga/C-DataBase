@@ -116,6 +116,7 @@ pontBD *buscaBancoPorNome(pontBD *listaBancos, char nomeBanco[])
 // Cadastros
 
 // cadastra os dados do banco [OK]
+
 PDados *novaCaixaDados(char Tipo, union UDados nDado)
 {
     PDados *nova = (PDados *)malloc(sizeof(PDados));
@@ -258,7 +259,8 @@ void CadastrarCampoNaTabela(PTabelas **Tabela, char nomeTabela[], char nomeCampo
 void CadastrarDadosNaTabela(PCampos *campos, char Tipo, union UDados nDado)
 {
     CadastrarDados(&(campos->ValorT), Tipo, nDado);
-    campos->PAtual = campos->ValorT;
+    if(campos->ValorT->prox == NULL)
+    	campos->PAtual = campos->ValorT;      
 }
 
 // Alterar

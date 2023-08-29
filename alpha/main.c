@@ -41,7 +41,7 @@ int main()
 
     strcpy(dado0.ValorT, "Raposo");
     CadastrarDadosNaTabela(buscaCampoPorNome(banco->PTabelas->Patual, "Nome"),'T', dado0);
-
+	getchar();
     printf("\nExibindo Dados\n");
     ExibirTodasAsTabelas(banco);
 

@@ -23,8 +23,8 @@ struct PCampos
 {
     char Campo[30], Tipo, PK;
     struct PAtual *FK;
-    struct PDados *ValorT;
-    struct PCampos *PAtual, *prox;
+    struct PDados *ValorT,*PAtual;
+    struct PCampos  *prox;
 };
 typedef struct PCampos PCampos;
 
@@ -43,11 +43,9 @@ struct pontBD
 };
 typedef struct pontBD pontBD;
 
+// Buscas
 
-
-//Buscas 
-
-//Dados
+// Dados
 PDados *BuscaDados(PDados *pDados, union UDados nDado)
 {
     PDados *aux = pDados;
@@ -55,83 +53,90 @@ PDados *BuscaDados(PDados *pDados, union UDados nDado)
     {
         if ((aux->UDados.ValorI == nDado.ValorI) || (aux->UDados.ValorN == nDado.ValorN) || (strcmp(aux->UDados.ValorD, nDado.ValorD) == 0) || (aux->UDados.ValorC == nDado.ValorC) || (strcmp(aux->UDados.ValorT, nDado.ValorT) == 0))
         {
-            return aux; 
+            return aux;
         }
         aux = aux->prox;
     }
     return NULL;
 }
 
-
-//Campos
+// Campos
 PCampos *buscaCampoPorNome(PCampos *campos, char nomeCampo[])
 {
     PCampos *atualCampo = campos;
-    
+
     while (atualCampo != NULL)
     {
         if (strcmp(atualCampo->Campo, nomeCampo) == 0)
         {
-            return atualCampo; 
+            return atualCampo;
         }
         atualCampo = atualCampo->prox;
     }
-    
-    return NULL; 
+
+    return NULL;
 }
 
-//Tabelas
+// Tabelas
 PTabelas *buscaTabelaPorNome(pontBD *banco, char nomeTabela[])
 {
     PTabelas *atualTabela = banco->PTabelas;
-    
+
     while (atualTabela != NULL)
     {
         if (strcmp(atualTabela->Tabela, nomeTabela) == 0)
         {
-            return atualTabela; 
+            return atualTabela;
         }
         atualTabela = atualTabela->prox;
     }
-    
+
     return NULL;
 }
-//Banco
+// Banco
 pontBD *buscaBancoPorNome(pontBD *listaBancos, char nomeBanco[])
 {
     pontBD *atualBanco = listaBancos;
-    
+
     while (atualBanco != NULL)
     {
         if (strcmp(atualBanco->Banco_Dados, nomeBanco) == 0)
         {
-            return atualBanco; 
+            return atualBanco;
         }
         // adaptar para ter N bancos
         atualBanco = NULL;
     }
-    
-    return NULL; 
+
+    return NULL;
 }
 
-//FK
-
-
+// FK
 
 // Cadastros
 
 // cadastra os dados do banco [OK]
-PDados *novaCaixaDados(union UDados nDado)
+PDados *novaCaixaDados(char Tipo, union UDados nDado)
 {
     PDados *nova = (PDados *)malloc(sizeof(PDados));
-    nova->UDados = nDado;
+    // if do tipo LEMBRAR
+    if (Tipo == 'I')
+        nova->UDados.ValorI = nDado.ValorI;
+    else if (Tipo == 'T')
+        strcpy(nova->UDados.ValorT, nDado.ValorT);
+    else if (Tipo == 'D')
+        strcpy(nova->UDados.ValorD, nDado.ValorD);
+    else if (Tipo == 'C')
+        nova->UDados.ValorC = nDado.ValorC;
+    else if (Tipo == 'N')
+        nova->UDados.ValorN = nDado.ValorN;
     nova->prox = NULL;
     return nova;
 }
 
-void CadastrarDados(PDados **pDados, union UDados nDado)
+void CadastrarDados(PDados **pDados, char Tipo, union UDados nDado)
 {
-    PDados *novaCaixa = novaCaixaDados(nDado);
+    PDados *novaCaixa = novaCaixaDados(Tipo, nDado);
 
     if (*pDados != NULL)
     {
@@ -220,7 +225,7 @@ pontBD *NovoCaixaBanco(char nome[])
 
 void CadastrarBannco(pontBD **Banco, char nome[])
 {
-    pontBD *novo = NovoCaixaBanco(nome)/* ,*temp = *Banco */;
+    pontBD *novo = NovoCaixaBanco(nome) /* ,*temp = *Banco */;
 
     if (*Banco == NULL)
     {
@@ -250,26 +255,25 @@ void CadastrarCampoNaTabela(PTabelas **Tabela, char nomeTabela[], char nomeCampo
 }
 
 // Função para cadastrar dados em um campo de uma tabela
-void CadastrarDadosNaTabela(PCampos *campos, union UDados nDado)
+void CadastrarDadosNaTabela(PCampos *campos, char Tipo, union UDados nDado)
 {
-    CadastrarDados(&(campos->ValorT), nDado);
+    CadastrarDados(&(campos->ValorT), Tipo, nDado);
+    campos->PAtual = campos->ValorT;
 }
 
+// Alterar
 
+// Dados
+// Campos
+// Tabelas
+// Banco
 
-//Alterar
+// Deletar
 
-//Dados
-//Campos
-//Tabelas
-//Banco
-
-//Deletar
-
-//Dados
-//Campos
-//Tabelas
-//Banco
+// Dados
+// Campos
+// Tabelas
+// Banco
 
 // exibe os dados
 void ExibirDados(PCampos *pCampos)
@@ -282,27 +286,27 @@ void ExibirDados(PCampos *pCampos)
         if (atualCampo->ValorT != NULL)
         {
             PDados *dados = atualCampo->ValorT;
-      		while(dados != NULL)
-      		{
-			 
-	            if (atualCampo->Tipo == 'I')
-	            {   
-	                printf("Valor: %d\n", dados->UDados.ValorI);
-	            }
-	            else if (atualCampo->Tipo == 'N')
-	            {         
-	                printf("Valor: %.2f\n", dados->UDados.ValorN);
-	            }
-	            else if (atualCampo->Tipo == 'T')
-	            {
-	                printf("Valor: %s\n", dados->UDados.ValorT);
-	            }
-	            else if (atualCampo->Tipo == 'C')
-	            {
-	                printf("Valor: %c\n", dados->UDados.ValorC);
-	            }
-	            dados = dados->prox;
-	        }
+            while (dados != NULL)
+            {
+
+                if (atualCampo->Tipo == 'I')
+                {
+                    printf("Valor: %d\n", dados->UDados.ValorI);
+                }
+                else if (atualCampo->Tipo == 'N')
+                {
+                    printf("Valor: %.2f\n", dados->UDados.ValorN);
+                }
+                else if (atualCampo->Tipo == 'T')
+                {
+                    printf("Valor: %s\n", dados->UDados.ValorT);
+                }
+                else if (atualCampo->Tipo == 'C')
+                {
+                    printf("Valor: %c\n", dados->UDados.ValorC);
+                }
+                dados = dados->prox;
+            }
         }
         printf("\n");
         atualCampo = atualCampo->prox;
@@ -315,11 +319,10 @@ void ExibirCampos(PCampos *pCampos)
     PCampos *atual = pCampos;
     while (atual != NULL)
     {
-        printf("Campo: %s\n", atual->Campo);
-        printf("Tipo: %c\n", atual->Tipo);
-        printf("PK: %c\n\n", atual->PK);
+    	printf("%s \t", atual->Campo);
         atual = atual->prox;
     }
+    printf("\n");
 }
 
 // Função para exibir todos os bancos
@@ -340,7 +343,6 @@ void ExibirTabelas(PTabelas *tabelas)
     }
 }
 
-
 // Função para exibir campos e dados de uma tabela específica
 void ExibirTabela(PTabelas *tabelas, char nomeTabela[])
 {
@@ -354,9 +356,9 @@ void ExibirTabela(PTabelas *tabelas, char nomeTabela[])
     {
         printf("Tabela: %s\n", tabelaAlvo->Tabela);
         ExibirCampos(tabelaAlvo->Patual);
-        //ExibirCamposTabela();
-         ExibirDados(tabelaAlvo->Patual); 
-        //ExibirDadosTabela();
+        // ExibirCamposTabela();
+        ExibirDados(tabelaAlvo->Patual);
+        // ExibirDadosTabela();
     }
 }
 
@@ -374,3 +376,59 @@ void ExibirTodasAsTabelas(pontBD *bancos)
         atualTabela = atualTabela->prox;
     }
 }
+
+void ExibirLinha(PCampos **pCampos)
+{
+    char flag = '1';
+	union UDados Dados;
+	PCampos *atualCampo = *pCampos;
+
+ 	ExibirCampos(*pCampos);
+ 	
+    while (flag == '1')
+    {
+        while (atualCampo != NULL)
+        {
+        	flag = '0';
+            if (atualCampo->PAtual != NULL)
+            {
+                flag = '1';
+
+          
+                Dados = atualCampo->PAtual->UDados;
+
+                if (atualCampo->Tipo == 'I')
+                {
+                    printf("%d \t", Dados.ValorI);
+                }
+                else if (atualCampo->Tipo == 'N')
+                {
+                    printf("%.2f \t", Dados.ValorN);
+                }
+                else if (atualCampo->Tipo == 'T')
+                {
+                    printf("%s \t", Dados.ValorT);
+                }
+                else if (atualCampo->Tipo == 'C')
+                {
+                    printf("%c \t", Dados.ValorC);
+                }
+
+          
+                atualCampo->PAtual = atualCampo->PAtual->prox;
+            }
+            atualCampo = atualCampo->prox;
+        }
+        atualCampo = *pCampos;
+        printf("\n");
+    }
+    atualCampo = *pCampos;
+    while(atualCampo !=NULL)
+    {
+		
+		atualCampo->PAtual = atualCampo->ValorT;
+		atualCampo = atualCampo->prox;
+	}
+}
+
+

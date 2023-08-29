@@ -121,6 +121,7 @@ pontBD *buscaBancoPorNome(pontBD *listaBancos, char nomeBanco[])
 // Cadastros
 
 // cadastra os dados do banco [OK]
+//mudar por .
 PDados *novaCaixaDados(union UDados nDado)
 {
     PDados *nova = (PDados *)malloc(sizeof(PDados));

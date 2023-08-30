@@ -41,7 +41,7 @@ int main()
 
     strcpy(dado0.ValorT, "Raposo");
     CadastrarDadosNaTabela(buscaCampoPorNome(banco->PTabelas->Patual, "Nome"),'T', dado0);
-	getchar();
+
     printf("\nExibindo Dados\n");
     ExibirTodasAsTabelas(banco);
 
@@ -63,5 +63,17 @@ int main()
 
     ExibirLinha(&(banco->PTabelas->Patual));
    // ExibirLinha(&(banco->PTabelas->Patual));
+
+    //tratar caso valor nulo
+    strcpy(dado0.ValorT, "Joao");
+    PDados *dadoParaAlterar = BuscaDados(buscaCampoPorNome(banco->PTabelas->Patual, "Nome")->ValorT, dado0);
+    printf("%s",dadoParaAlterar->UDados.ValorT);
+    AlterarDado(dadoParaAlterar, "Turista");
+
+    
+
+
+    printf("ok");
+    ExibirLinha(&(banco->PTabelas->Patual));
     return 0;
 }

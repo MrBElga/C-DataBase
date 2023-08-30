@@ -23,8 +23,8 @@ struct PCampos
 {
     char Campo[30], Tipo, PK;
     struct PAtual *FK;
-    struct PDados *ValorT,*PAtual;
-    struct PCampos  *prox;
+    struct PDados *ValorT, *PAtual;
+    struct PCampos *prox;
 };
 typedef struct PCampos PCampos;
 
@@ -48,6 +48,7 @@ typedef struct pontBD pontBD;
 // Dados
 PDados *BuscaDados(PDados *pDados, union UDados nDado)
 {
+       printf("B2ok \n");
     PDados *aux = pDados;
     while (aux != NULL)
     {
@@ -63,6 +64,7 @@ PDados *BuscaDados(PDados *pDados, union UDados nDado)
 // Campos
 PCampos *buscaCampoPorNome(PCampos *campos, char nomeCampo[])
 {
+      printf("B1ok \n");
     PCampos *atualCampo = campos;
 
     while (atualCampo != NULL)
@@ -259,23 +261,51 @@ void CadastrarCampoNaTabela(PTabelas **Tabela, char nomeTabela[], char nomeCampo
 void CadastrarDadosNaTabela(PCampos *campos, char Tipo, union UDados nDado)
 {
     CadastrarDados(&(campos->ValorT), Tipo, nDado);
-    if(campos->ValorT->prox == NULL)
-    	campos->PAtual = campos->ValorT;      
+    if (campos->ValorT->prox == NULL)
+        campos->PAtual = campos->ValorT;
 }
 
 // Alterar
 
-// Dados
+// Dados´
+void AlterarDado(PDados *pDados,char NovoDado[])
+{
+    printf("ok");
+    strcpy(pDados->UDados.ValorT,NovoDado);
+    printf("ok\n");
+}
+
 // Campos
+void AlterarCampo()
+{
+}
 // Tabelas
+void AlterarTabela()
+{
+}
 // Banco
+void AlterarBanco()
+{
+}
 
 // Deletar
 
 // Dados
+void DeletarDado()
+{
+}
 // Campos
+void DeletarCampo()
+{
+}
 // Tabelas
+void DeletarTabela()
+{
+}
 // Banco
+void DeletarBanco()
+{
+}
 
 // exibe os dados
 void ExibirDados(PCampos *pCampos)
@@ -321,7 +351,7 @@ void ExibirCampos(PCampos *pCampos)
     PCampos *atual = pCampos;
     while (atual != NULL)
     {
-    	printf("%s \t", atual->Campo);
+        printf("%s \t", atual->Campo);
         atual = atual->prox;
     }
     printf("\n");
@@ -382,21 +412,20 @@ void ExibirTodasAsTabelas(pontBD *bancos)
 void ExibirLinha(PCampos **pCampos)
 {
     char flag = '1';
-	union UDados Dados;
-	PCampos *atualCampo = *pCampos;
+    union UDados Dados;
+    PCampos *atualCampo = *pCampos;
 
- 	ExibirCampos(*pCampos);
- 	
+    ExibirCampos(*pCampos);
+
     while (flag == '1')
     {
         while (atualCampo != NULL)
         {
-        	flag = '0';
+            flag = '0';
             if (atualCampo->PAtual != NULL)
             {
                 flag = '1';
 
-          
                 Dados = atualCampo->PAtual->UDados;
 
                 if (atualCampo->Tipo == 'I')
@@ -416,7 +445,6 @@ void ExibirLinha(PCampos **pCampos)
                     printf("%c \t", Dados.ValorC);
                 }
 
-          
                 atualCampo->PAtual = atualCampo->PAtual->prox;
             }
             atualCampo = atualCampo->prox;
@@ -425,12 +453,10 @@ void ExibirLinha(PCampos **pCampos)
         printf("\n");
     }
     atualCampo = *pCampos;
-    while(atualCampo !=NULL)
+    while (atualCampo != NULL)
     {
-		
-		atualCampo->PAtual = atualCampo->ValorT;
-		atualCampo = atualCampo->prox;
-	}
+
+        atualCampo->PAtual = atualCampo->ValorT;
+        atualCampo = atualCampo->prox;
+    }
 }
-
-

@@ -48,7 +48,6 @@ typedef struct pontBD pontBD;
 // Dados
 PDados *BuscaDados(PDados *pDados, union UDados nDado)
 {
-       printf("B2ok \n");
     PDados *aux = pDados;
     while (aux != NULL)
     {
@@ -64,7 +63,6 @@ PDados *BuscaDados(PDados *pDados, union UDados nDado)
 // Campos
 PCampos *buscaCampoPorNome(PCampos *campos, char nomeCampo[])
 {
-      printf("B1ok \n");
     PCampos *atualCampo = campos;
 
     while (atualCampo != NULL)
@@ -270,9 +268,7 @@ void CadastrarDadosNaTabela(PCampos *campos, char Tipo, union UDados nDado)
 // Dados´
 void AlterarDado(PDados *pDados,char NovoDado[])
 {
-    printf("ok");
     strcpy(pDados->UDados.ValorT,NovoDado);
-    printf("ok\n");
 }
 
 // Campos

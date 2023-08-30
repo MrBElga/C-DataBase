@@ -45,7 +45,7 @@ typedef struct pontBD pontBD;
 
 // Buscas
 
-// Dados
+// Dados [OK]
 PDados *BuscaDados(PDados *pDados, union UDados nDado)
 {
     PDados *aux = pDados;
@@ -60,7 +60,7 @@ PDados *BuscaDados(PDados *pDados, union UDados nDado)
     return NULL;
 }
 
-// Campos
+// Campos [OK]
 PCampos *buscaCampoPorNome(PCampos *campos, char nomeCampo[])
 {
     PCampos *atualCampo = campos;
@@ -77,7 +77,7 @@ PCampos *buscaCampoPorNome(PCampos *campos, char nomeCampo[])
     return NULL;
 }
 
-// Tabelas
+// Tabelas[OK]
 PTabelas *buscaTabelaPorNome(pontBD *banco, char nomeTabela[])
 {
     PTabelas *atualTabela = banco->PTabelas;

@@ -234,6 +234,7 @@ void CadastrarBannco(pontBD **Banco, char nome[])
     }
     else
     {
+        //alterar para caso haja mais bancos
         printf("no momento só é possivel cadastrar um banco de dados\n");
         printf("delete o banco atual para cadastrar um novo\n");
         getchar();

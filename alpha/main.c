@@ -69,11 +69,22 @@ int main()
     PDados *dadoParaAlterar = BuscaDados(buscaCampoPorNome(banco->PTabelas->Patual, "Nome")->ValorT, dado0);
     printf("%s",dadoParaAlterar->UDados.ValorT);
     AlterarDado(dadoParaAlterar, "Turista");
-
     
-
-
-    printf("ok");
     ExibirLinha(&(banco->PTabelas->Patual));
+
+
+    pontBD *BancoAlt = buscaBancoPorNome(banco,"MeuBanco");;
+    AlterarBanco(BancoAlt,"Clientes");
+
+    ExibirBancos(banco);
+
+    PTabelas *TabAlt = buscaTabelaPorNome(banco,"Clientes");
+    AlterarTabela(TabAlt,"Clientes0");
+    ExibirTabelas(banco->PTabelas);
+
+    PCampos *CampoAlt =  buscaCampoPorNome(buscaTabelaPorNome(banco,"Clientes0")->Patual,"Idade");
+    AlterarCampo(CampoAlt,"Idade0");
+	ExibirCampo(banco->PTabelas->Patual,"Idade0");
+	
     return 0;
 }

@@ -71,7 +71,7 @@ PCampos *buscaCampoPorNome(PCampos *campos, char nomeCampo[])
         {
             return atualCampo;
         }
-        atualCampo = atualCampo->prox;
+        atualCampo = atualCampo->prox;		
     }
 
     return NULL;
@@ -272,16 +272,19 @@ void AlterarDado(PDados *pDados,char NovoDado[])
 }
 
 // Campos
-void AlterarCampo()
+void AlterarCampo(PCampos *pCampos, char NovoCampo[])
 {
+    strcpy(pCampos->Campo,NovoCampo);
 }
 // Tabelas
-void AlterarTabela()
+void AlterarTabela(PTabelas *pTabela, char NovoTabela[])
 {
+    strcpy(pTabela->Tabela,NovoTabela);
 }
 // Banco
-void AlterarBanco()
+void AlterarBanco(pontBD *PontBD, char NovoBanco[])
 {
+    strcpy(PontBD->Banco_Dados,NovoBanco);
 }
 
 // Deletar
@@ -348,6 +351,18 @@ void ExibirCampos(PCampos *pCampos)
     while (atual != NULL)
     {
         printf("%s \t", atual->Campo);
+        atual = atual->prox;
+    }
+    printf("\n");
+}
+
+void ExibirCampo(PCampos *pCampos,char Nome[])
+{
+    PCampos *atual = pCampos;
+    while (atual != NULL)
+    {
+    	if(strcmp(atual->Campo,Nome)==0)
+        	printf("Campo: %s", atual->Campo);
         atual = atual->prox;
     }
     printf("\n");

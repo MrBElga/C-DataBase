@@ -71,7 +71,7 @@ PCampos *buscaCampoPorNome(PCampos *campos, char nomeCampo[])
         {
             return atualCampo;
         }
-        atualCampo = atualCampo->prox;		
+        atualCampo = atualCampo->prox;
     }
 
     return NULL;
@@ -234,7 +234,7 @@ void CadastrarBannco(pontBD **Banco, char nome[])
     }
     else
     {
-        //alterar para caso haja mais bancos
+        // alterar para caso haja mais bancos
         printf("no momento só é possivel cadastrar um banco de dados\n");
         printf("delete o banco atual para cadastrar um novo\n");
         getchar();
@@ -267,25 +267,25 @@ void CadastrarDadosNaTabela(PCampos *campos, char Tipo, union UDados nDado)
 // Alterar
 
 // Dados´
-void AlterarDado(PDados *pDados,char NovoDado[])
+void AlterarDado(PDados *pDados, char NovoDado[])
 {
-    strcpy(pDados->UDados.ValorT,NovoDado);
+    strcpy(pDados->UDados.ValorT, NovoDado);
 }
 
 // Campos
 void AlterarCampo(PCampos *pCampos, char NovoCampo[])
 {
-    strcpy(pCampos->Campo,NovoCampo);
+    strcpy(pCampos->Campo, NovoCampo);
 }
 // Tabelas
 void AlterarTabela(PTabelas *pTabela, char NovoTabela[])
 {
-    strcpy(pTabela->Tabela,NovoTabela);
+    strcpy(pTabela->Tabela, NovoTabela);
 }
 // Banco
 void AlterarBanco(pontBD *PontBD, char NovoBanco[])
 {
-    strcpy(PontBD->Banco_Dados,NovoBanco);
+    strcpy(PontBD->Banco_Dados, NovoBanco);
 }
 
 // Deletar
@@ -357,13 +357,13 @@ void ExibirCampos(PCampos *pCampos)
     printf("\n");
 }
 
-void ExibirCampo(PCampos *pCampos,char Nome[])
+void ExibirCampo(PCampos *pCampos, char Nome[])
 {
     PCampos *atual = pCampos;
     while (atual != NULL)
     {
-    	if(strcmp(atual->Campo,Nome)==0)
-        	printf("Campo: %s", atual->Campo);
+        if (strcmp(atual->Campo, Nome) == 0)
+            printf("Campo: %s", atual->Campo);
         atual = atual->prox;
     }
     printf("\n");

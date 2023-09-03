@@ -73,9 +73,7 @@ int main()
     ExibirLinha(&(banco->PTabelas->Patual));
 
     pontBD *BancoAlt = buscaBancoPorNome(banco, "MeuBanco");
-    ;
     AlterarBanco(BancoAlt, "Clientes");
-
     ExibirBancos(banco);
 
     PTabelas *TabAlt = buscaTabelaPorNome(banco, "Clientes");
@@ -86,5 +84,11 @@ int main()
     AlterarCampo(CampoAlt, "Idade0");
     ExibirCampo(banco->PTabelas->Patual, "Idade0");
 
+    //exlusão
+    strcpy(dado0.ValorT, "Jerco");
+    dadoParaAlterar=BuscaDados(buscaCampoPorNome(banco->PTabelas->Patual, "Nome")->ValorT, dado0);
+    if(strcmp(dadoParaAlterar->UDados.ValorT,dado0.ValorT)==0)
+        DeletarDado(&dadoParaAlterar,dado0.ValorT);
+    ExibirLinha(&(banco->PTabelas->Patual));
     return 0;
 }

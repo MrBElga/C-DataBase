@@ -291,8 +291,22 @@ void AlterarBanco(pontBD *PontBD, char NovoBanco[])
 // Deletar
 
 // Dados
-void DeletarDado()
+void DeletarDado(PDados **pDados, char dado[])
 {
+    PDados *atual = *pDados;
+
+    while (atual != NULL)
+    {
+        if(strcmp(atual->UDados.ValorT, dado) == 0)
+            strcpy(atual->UDados.ValorT,"NULL"); 
+        atual = atual->prox;
+    }
+}
+
+//Deletar linha
+void DeletarLinha()
+{
+    
 }
 // Campos
 void DeletarCampo()
@@ -306,6 +320,7 @@ void DeletarTabela()
 void DeletarBanco()
 {
 }
+
 
 // exibe os dados
 void ExibirDados(PCampos *pCampos)

@@ -265,8 +265,7 @@ void CadastrarDadosNaTabela(PCampos *campos, char Tipo, union UDados nDado)
 }
 
 // Alterar
-
-// Dados´
+// Dados
 void AlterarDado(PDados *pDados, char NovoDado[])
 {
     strcpy(pDados->UDados.ValorT, NovoDado);
@@ -290,19 +289,6 @@ void AlterarBanco(pontBD *PontBD, char NovoBanco[])
 
 // Deletar
 
-// Dados
-void DeletarDado(PDados **pDados, char dado[])
-{
-    PDados *atual = *pDados;
-
-    while (atual != NULL)
-    {
-        if(strcmp(atual->UDados.ValorT, dado) == 0)
-            strcpy(atual->UDados.ValorT,"NULL"); 
-        atual = atual->prox;
-    }
-}
-
 //Deletar linha
 void DeletarLinha()
 {
@@ -311,14 +297,17 @@ void DeletarLinha()
 // Campos
 void DeletarCampo()
 {
+
 }
 // Tabelas
 void DeletarTabela()
 {
+
 }
 // Banco
 void DeletarBanco()
-{
+{   
+
 }
 
 
@@ -335,7 +324,6 @@ void ExibirDados(PCampos *pCampos)
             PDados *dados = atualCampo->ValorT;
             while (dados != NULL)
             {
-
                 if (atualCampo->Tipo == 'I')
                 {
                     printf("Valor: %d\n", dados->UDados.ValorI);
@@ -482,7 +470,6 @@ void ExibirLinha(PCampos **pCampos)
     atualCampo = *pCampos;
     while (atualCampo != NULL)
     {
-
         atualCampo->PAtual = atualCampo->ValorT;
         atualCampo = atualCampo->prox;
     }

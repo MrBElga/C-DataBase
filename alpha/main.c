@@ -84,7 +84,7 @@ int main()
     AlterarCampo(CampoAlt, "Idade0");
     ExibirCampo(banco->PTabelas->Patual, "Idade0");
 
-    //exlusão
+    //exlusão arrumar 
     strcpy(dado0.ValorT, "Jerco");
     dadoParaAlterar=BuscaDados(buscaCampoPorNome(banco->PTabelas->Patual, "Nome")->ValorT, dado0);
     if(strcmp(dadoParaAlterar->UDados.ValorT,dado0.ValorT)==0)

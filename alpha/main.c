@@ -1,94 +1,126 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <conio2.h>
 #include "tad.h"
 
-int main()
-{
+
+// Função para remover quebra de linha de uma string
+void removerQuebraDeLinha(char *str) {
+    size_t length = strlen(str);
+    if (length > 0 && str[length - 1] == '\n') {
+        str[length - 1] = '\0';
+    }
+}
+
+// Função para executar um comando SQL
+void executarComandoSQL(pontBD **banco, const char *comando) {
+    char comandoCopy[1024];
+    strcpy(comandoCopy, comando);
+
+    char *token = strtok(comandoCopy, " ");
+    if (token == NULL) {
+        printf("Comando SQL não reconhecido: %s\n", comando);
+        return;
+    }
+
+    if (strcmp(token, "CREATE") == 0) {
+      
+        printf("Executando CREATE TABLE...\n");
+    } else if (strcmp(token, "INSERT") == 0) {
+ 
+        printf("Executando INSERT INTO...\n");
+    } else if (strcmp(token, "UPDATE") == 0) {
+       
+        printf("Executando UPDATE...\n");
+    } else if (strcmp(token, "DELETE") == 0) {
+        
+        printf("Executando DELETE FROM...\n");
+    } else if (strcmp(token, "SELECT") == 0) {
+        
+        printf("Executando SELECT...\n");
+    } else if (strcmp(token, "SAIR") == 0) {
+        printf("Encerrando o programa...\n");
+    } else {
+        printf("Comando SQL não reconhecido: %s\n", comando);
+    }
+}
+
+void carregarScriptDeCriacao(pontBD **banco, const char *nomeArquivo) {
+    FILE *arquivo = fopen(nomeArquivo, "r");
+    if (arquivo == NULL) {
+        printf("Erro ao abrir o arquivo: %s\n", nomeArquivo);
+        return;
+    }
+
+    char linha[1024];
+    while (fgets(linha, sizeof(linha), arquivo)) {
+      
+        linha[strcspn(linha, "\n")] = '\0';
+
+       
+        executarComandoSQL(banco, linha);
+    }
+
+    fclose(arquivo);
+}
+
+char menu() {
+    clrscr();
+    printf("Escolha uma opção:\n");
+    printf("1. Ler script SQL de um arquivo de texto\n");
+    printf("2. Digitar um comando SQL\n");
+    printf("3. Sair\n");
+    printf("Opção: ");
+
+    return getche();
+}
+
+int main() {
     pontBD *banco = NULL;
-    CadastrarBannco(&banco, "MeuBanco");
+    char comando[1024], escolha;
+  
+    printf("Simulador de Sistema Gerenciador de Banco de Dados\n");
 
-    CadastrarTabela(&(banco->PTabelas), "Clientes");
+    do {
 
-    CadastrarCampoNaTabela(&(banco->PTabelas), "Clientes", "ID", 'I', 'S');
-    CadastrarCampoNaTabela(&(banco->PTabelas), "Clientes", "Nome", 'T', 'N');
-    CadastrarCampoNaTabela(&(banco->PTabelas), "Clientes", "Idade", 'I', 'N');
+        escolha = menu();
+        switch (escolha) {
+            case '1':
+                {
+                    char nomeArquivo[256];
+                    printf("Digite o caminho completo do arquivo de script: ");
+                    fgets(nomeArquivo, sizeof(nomeArquivo), stdin);
 
-    union UDados dado0;
-    dado0.ValorI = 0;
-    CadastrarDadosNaTabela(buscaCampoPorNome(banco->PTabelas->Patual, "ID"), 'I', dado0);
+                    // Remova a quebra de linha
+                    nomeArquivo[strcspn(nomeArquivo, "\n")] = '\0';
 
-    dado0.ValorI = 25;
-    CadastrarDadosNaTabela(buscaCampoPorNome(banco->PTabelas->Patual, "Idade"), 'I', dado0);
+                    carregarScriptDeCriacao(&banco, nomeArquivo);
+                    break;
+                }
+            case '2':
+                {
+                    printf("Digite um comando SQL (ou 'SAIR' para voltar ao menu principal):\n");
+                    fgets(comando, sizeof(comando), stdin);
 
-    strcpy(dado0.ValorT, "Joao");
-    CadastrarDadosNaTabela(buscaCampoPorNome(banco->PTabelas->Patual, "Nome"), 'T', dado0);
+                    // Remova a quebra de linha
+                    comando[strcspn(comando, "\n")] = '\0';
 
-    dado0.ValorI = 1;
-    CadastrarDadosNaTabela(buscaCampoPorNome(banco->PTabelas->Patual, "ID"), 'I', dado0);
+                    if (strcmp(comando, "SAIR") != 0) {
+                        executarComandoSQL(&banco, comando);
+                    }
+                    break;
+                }
+            case '3':
+                printf("Encerrando o programa.\n");
+                break;
+            
+        }
+        getchar();
 
-    dado0.ValorI = 31;
-    CadastrarDadosNaTabela(buscaCampoPorNome(banco->PTabelas->Patual, "Idade"), 'I', dado0);
+    } while (escolha != '3');
 
-    strcpy(dado0.ValorT, "Jerco");
-    CadastrarDadosNaTabela(buscaCampoPorNome(banco->PTabelas->Patual, "Nome"), 'T', dado0);
 
-    dado0.ValorI = 2;
-    CadastrarDadosNaTabela(buscaCampoPorNome(banco->PTabelas->Patual, "ID"), 'I', dado0);
 
-    dado0.ValorI = 50;
-    CadastrarDadosNaTabela(buscaCampoPorNome(banco->PTabelas->Patual, "Idade"), 'I', dado0);
-
-    strcpy(dado0.ValorT, "Raposo");
-    CadastrarDadosNaTabela(buscaCampoPorNome(banco->PTabelas->Patual, "Nome"), 'T', dado0);
-
-    printf("\nExibindo Dados\n");
-    ExibirTodasAsTabelas(banco);
-
-    union UDados buscaDado;
-    buscaDado.ValorI = 31;
-
-    PDados *resultadoBusca = BuscaDados(buscaCampoPorNome(banco->PTabelas->Patual, "Idade")->ValorT, buscaDado);
-
-    if (resultadoBusca != NULL)
-    {
-        printf("\nDado encontrado:\n");
-        printf("Campo: Idade\n");
-        printf("Valor: %d\n", resultadoBusca->UDados.ValorI);
-    }
-    else
-    {
-        printf("\nDado não encontrado.\n");
-    }
-
-    ExibirLinha(&(banco->PTabelas->Patual));
-    // ExibirLinha(&(banco->PTabelas->Patual));
-
-    // tratar caso valor nulo
-    strcpy(dado0.ValorT, "Joao");
-    PDados *dadoParaAlterar = BuscaDados(buscaCampoPorNome(banco->PTabelas->Patual, "Nome")->ValorT, dado0);
-    printf("%s", dadoParaAlterar->UDados.ValorT);
-    AlterarDado(dadoParaAlterar, "Turista");
-
-    ExibirLinha(&(banco->PTabelas->Patual));
-
-    pontBD *BancoAlt = buscaBancoPorNome(banco, "MeuBanco");
-    AlterarBanco(BancoAlt, "Clientes");
-    ExibirBancos(banco);
-
-    PTabelas *TabAlt = buscaTabelaPorNome(banco, "Clientes");
-    AlterarTabela(TabAlt, "Clientes0");
-    ExibirTabelas(banco->PTabelas);
-
-    PCampos *CampoAlt = buscaCampoPorNome(buscaTabelaPorNome(banco, "Clientes0")->Patual, "Idade");
-    AlterarCampo(CampoAlt, "Idade0");
-    ExibirCampo(banco->PTabelas->Patual, "Idade0");
-
-    //exlusão arrumar 
-    strcpy(dado0.ValorT, "Jerco");
-    dadoParaAlterar=BuscaDados(buscaCampoPorNome(banco->PTabelas->Patual, "Nome")->ValorT, dado0);
-    if(strcmp(dadoParaAlterar->UDados.ValorT,dado0.ValorT)==0)
-        DeletarDado(&dadoParaAlterar,dado0.ValorT);
-    ExibirLinha(&(banco->PTabelas->Patual));
     return 0;
 }

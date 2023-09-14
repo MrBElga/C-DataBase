@@ -218,13 +218,13 @@ void CadastrarTabela(PTabelas **Tabela, char nome[])
 // Cadastrar Banco [OK]
 pontBD *NovoCaixaBanco(char nome[])
 {
-    pontBD *novo = (pontBD *)malloc(sizeof(pontBD));
+    pontBD *novo = (pontBD*)malloc(sizeof(pontBD));
     strcpy(novo->Banco_Dados, nome);
     novo->PTabelas = NULL;
     return novo;
 }
 
-void CadastrarBannco(pontBD **Banco, char nome[])
+void CadastrarBanco(pontBD **Banco, char nome[])
 {
     pontBD *novo = NovoCaixaBanco(nome) /* ,*temp = *Banco */;
 
@@ -235,7 +235,7 @@ void CadastrarBannco(pontBD **Banco, char nome[])
     else
     {
         // alterar para caso haja mais bancos
-        printf("no momento só é possivel cadastrar um banco de dados\n");
+        printf("no momento nao possivel cadastrar um banco de dados\n");
         printf("delete o banco atual para cadastrar um novo\n");
         getchar();
     }

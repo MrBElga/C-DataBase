@@ -1,126 +1,140 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <conio2.h>
+//#include <conio2.h>
 #include "tad.h"
 
 
-// Função para remover quebra de linha de uma string
-void removerQuebraDeLinha(char *str) {
-    size_t length = strlen(str);
-    if (length > 0 && str[length - 1] == '\n') {
-        str[length - 1] = '\0';
-    }
+void clearString(char line[])
+{
+	int i;
+	for(i=0;i<strlen(line);i++)
+		line[i] =' ';
+	
+}
+char getComando(char line[50], char comando[50])
+{
+	int cont =0,i;
+	char flag=1;
+	for(i=0;i<strlen(comando) && cont <=1;i++){
+		
+			
+		if(comando[i]!=line[i])
+			flag=0;
+			
+		if(line[i]==' ')
+			cont++;	
+	}	
+	return flag;
+
+}
+void getNomeCampo(char line[50],char *aux)
+{
+	int i=0;
+	int cont=0;
+	char nome[50];
+	for(i=0;i<strlen(line) && cont <=1 ;i++)
+	{		
+		if(line[i]==' ')
+		  cont++;
+		
+		aux[i] = line[i];		
+	}
+
 }
 
-// Função para executar um comando SQL
-void executarComandoSQL(pontBD **banco, const char *comando) {
-    char comandoCopy[1024];
-    strcpy(comandoCopy, comando);
+void getNomeTabela(char line[50],char *nome)
+{
+	int i=0,j=0;
+	int cont=0;
+	for(i=0;i<strlen(line);i++)
+	{
+		
+		if(cont >=2 && line[i]!='(' && line[i]!=' ' && line[i]!=';' && line[i]!=10)
+		{
+			nome[j] = line[i];
+			j++;
+		}
+		
+	
+		if(line[i]==' ')
+			cont++;
+	
+		
+	}
+	nome[j] = '\0';
 
-    char *token = strtok(comandoCopy, " ");
-    if (token == NULL) {
-        printf("Comando SQL não reconhecido: %s\n", comando);
-        return;
-    }
-
-    if (strcmp(token, "CREATE") == 0) {
-      
-        printf("Executando CREATE TABLE...\n");
-    } else if (strcmp(token, "INSERT") == 0) {
- 
-        printf("Executando INSERT INTO...\n");
-    } else if (strcmp(token, "UPDATE") == 0) {
-       
-        printf("Executando UPDATE...\n");
-    } else if (strcmp(token, "DELETE") == 0) {
-        
-        printf("Executando DELETE FROM...\n");
-    } else if (strcmp(token, "SELECT") == 0) {
-        
-        printf("Executando SELECT...\n");
-    } else if (strcmp(token, "SAIR") == 0) {
-        printf("Encerrando o programa...\n");
-    } else {
-        printf("Comando SQL não reconhecido: %s\n", comando);
-    }
 }
 
-void carregarScriptDeCriacao(pontBD **banco, const char *nomeArquivo) {
-    FILE *arquivo = fopen(nomeArquivo, "r");
-    if (arquivo == NULL) {
-        printf("Erro ao abrir o arquivo: %s\n", nomeArquivo);
-        return;
-    }
-
-    char linha[1024];
-    while (fgets(linha, sizeof(linha), arquivo)) {
-      
-        linha[strcspn(linha, "\n")] = '\0';
-
-       
-        executarComandoSQL(banco, linha);
-    }
-
-    fclose(arquivo);
+void getTipo(char line[50],char *tipo){
+	
+	int i,cont=0,j=0;
+	char aux[50];
+	for(i=0;i<strlen(line);i++){
+		
+		if(line[i]== ' ')
+			cont++;
+			
+		if(cont >=2 &&  line[i]!= ',')
+		{
+			tipo[j] = line[i];
+			j++;
+		}
+		
+	}
 }
 
-char menu() {
-    clrscr();
-    printf("Escolha uma opção:\n");
-    printf("1. Ler script SQL de um arquivo de texto\n");
-    printf("2. Digitar um comando SQL\n");
-    printf("3. Sair\n");
-    printf("Opção: ");
-
-    return getche();
+void lerComandos(pontBD **b)
+{
+	FILE*Arq = fopen("script.txt","r");
+	char line[50],nome[50],tipo[50],database[50];
+	
+	char flag=0;
+	fgets(line,sizeof(line),Arq);
+	while(!feof(Arq))
+	{
+		
+		if(flag && !getComando(line,");"))
+		{
+			clearString(nome);
+			//clearString(tipo);
+			getNomeCampo(line,nome);
+			//getTipo(line,tipo);
+			//printf("%s\n",nome);
+		}	
+			
+		if(getComando(line,"CREATE TABLE "))
+		{
+			//getNomeTabela(line);
+			flag=1;
+		}
+		if(getComando(line,"CREATE DATABASE "))
+		{
+			getNomeTabela(line,database);
+			printf("%s",database);
+			CadastrarBanco(b,database);
+		}	
+		if(getComando(line,");"))
+		{
+			flag=0;
+		}
+			
+		
+		fgets(line,sizeof(line),Arq);	
+	}
+	fclose(Arq);
 }
 
-int main() {
-    pontBD *banco = NULL;
-    char comando[1024], escolha;
-  
-    printf("Simulador de Sistema Gerenciador de Banco de Dados\n");
-
-    do {
-
-        escolha = menu();
-        switch (escolha) {
-            case '1':
-                {
-                    char nomeArquivo[256];
-                    printf("Digite o caminho completo do arquivo de script: ");
-                    fgets(nomeArquivo, sizeof(nomeArquivo), stdin);
-
-                    // Remova a quebra de linha
-                    nomeArquivo[strcspn(nomeArquivo, "\n")] = '\0';
-
-                    carregarScriptDeCriacao(&banco, nomeArquivo);
-                    break;
-                }
-            case '2':
-                {
-                    printf("Digite um comando SQL (ou 'SAIR' para voltar ao menu principal):\n");
-                    fgets(comando, sizeof(comando), stdin);
-
-                    // Remova a quebra de linha
-                    comando[strcspn(comando, "\n")] = '\0';
-
-                    if (strcmp(comando, "SAIR") != 0) {
-                        executarComandoSQL(&banco, comando);
-                    }
-                    break;
-                }
-            case '3':
-                printf("Encerrando o programa.\n");
-                break;
-            
-        }
-        getchar();
-
-    } while (escolha != '3');
 
 
+int main() 
+{
+	pontBD *banco = NULL;
+	
+	lerComandos(&banco);
+	printf("\n");
+	ExibirBancos(banco);
 
+	free(banco);
     return 0;
 }

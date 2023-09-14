@@ -5,45 +5,56 @@
 #include "tad.h"
 
 
-// Função para remover quebra de linha de uma string
-void removerQuebraDeLinha(char *str) {
-    size_t length = strlen(str);
-    if (length > 0 && str[length - 1] == '\n') {
-        str[length - 1] = '\0';
-    }
-}
+// para executar um comando SQL
+#include <stdio.h>
+#include <string.h>
 
-// Função para executar um comando SQL
-void executarComandoSQL(pontBD **banco, const char *comando) {
-    char comandoCopy[1024];
+void executarComandoSQL(pontBD **banco, const char *comando) 
+{
+    char comandoCopy[100];
+    char token[100];  // Changed token to an array
     strcpy(comandoCopy, comando);
+    strcpy(token, comando);  // Copy the command to token
 
-    char *token = strtok(comandoCopy, " ");
-    if (token == NULL) {
-        printf("Comando SQL não reconhecido: %s\n", comando);
+    // Tokenize the command to extract the first word
+    char *tokenPtr = strtok(token, " ");
+    
+    if (tokenPtr == NULL)
+    {
+        printf("Comando SQL nao reconhecido: %s\n", comando);
         return;
     }
 
-    if (strcmp(token, "CREATE") == 0) {
-      
+    if (strcmp(tokenPtr, "CREATE") == 0) 
+    {
         printf("Executando CREATE TABLE...\n");
-    } else if (strcmp(token, "INSERT") == 0) {
- 
+    } 
+    else if (strcmp(tokenPtr, "INSERT") == 0) 
+    {
         printf("Executando INSERT INTO...\n");
-    } else if (strcmp(token, "UPDATE") == 0) {
-       
+    } 
+    else if (strcmp(tokenPtr, "UPDATE") == 0) 
+    {
         printf("Executando UPDATE...\n");
-    } else if (strcmp(token, "DELETE") == 0) {
-        
+    } 
+    else if (strcmp(tokenPtr, "DELETE") == 0) 
+    {
         printf("Executando DELETE FROM...\n");
-    } else if (strcmp(token, "SELECT") == 0) {
-        
+    } 
+    else if (strcmp(tokenPtr, "SELECT") == 0)
+    {
         printf("Executando SELECT...\n");
-    } else if (strcmp(token, "SAIR") == 0) {
+    } 
+    else if (strcmp(tokenPtr, "SAIR") == 0) 
+    {
+
         printf("Encerrando o programa...\n");
-    } else {
+    } 
+    else 
+    {
         printf("Comando SQL não reconhecido: %s\n", comando);
     }
+    getchar();
 }
 
 void carregarScriptDeCriacao(pontBD **banco, const char *nomeArquivo) {
@@ -53,7 +64,7 @@ void carregarScriptDeCriacao(pontBD **banco, const char *nomeArquivo) {
         return;
     }
 
-    char linha[1024];
+    char linha[100];
     while (fgets(linha, sizeof(linha), arquivo)) {
       
         linha[strcspn(linha, "\n")] = '\0';
@@ -66,34 +77,33 @@ void carregarScriptDeCriacao(pontBD **banco, const char *nomeArquivo) {
 }
 
 char menu() {
-    clrscr();
-    printf("Escolha uma opção:\n");
-    printf("1. Ler script SQL de um arquivo de texto\n");
-    printf("2. Digitar um comando SQL\n");
-    printf("3. Sair\n");
-    printf("Opção: ");
+    system("cls");
+    printf("[1] Ler script SQL de um arquivo de texto\n");
+    printf("[2] Digitar um comando SQL\n");
+    printf("[ESC] Sair\n");
+    printf("Opcao: ");
 
     return getche();
 }
 
-int main() {
+int main() 
+{
     pontBD *banco = NULL;
-    char comando[1024], escolha;
+    char comando[100], nomeArquivo[100], op;
   
     printf("Simulador de Sistema Gerenciador de Banco de Dados\n");
 
     do {
 
-        escolha = menu();
-        switch (escolha) {
+        op = menu();
+        switch (op) {
             case '1':
                 {
-                    char nomeArquivo[256];
+                    
                     printf("Digite o caminho completo do arquivo de script: ");
                     fgets(nomeArquivo, sizeof(nomeArquivo), stdin);
 
-                    // Remova a quebra de linha
-                    nomeArquivo[strcspn(nomeArquivo, "\n")] = '\0';
+                
 
                     carregarScriptDeCriacao(&banco, nomeArquivo);
                     break;
@@ -116,9 +126,8 @@ int main() {
                 break;
             
         }
-        getchar();
-
-    } while (escolha != '3');
+      
+    } while (op != 27);
 
 
 

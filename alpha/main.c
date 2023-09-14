@@ -4,19 +4,14 @@
 #include <conio2.h>
 #include "tad.h"
 
-
-// para executar um comando SQL
-#include <stdio.h>
-#include <string.h>
-
 void executarComandoSQL(pontBD **banco, const char *comando) 
 {
     char comandoCopy[100];
-    char token[100];  // Changed token to an array
+    char token[100];  
     strcpy(comandoCopy, comando);
-    strcpy(token, comando);  // Copy the command to token
+    strcpy(token, comando);
 
-    // Tokenize the command to extract the first word
+
     char *tokenPtr = strtok(token, " ");
     
     if (tokenPtr == NULL)
@@ -113,7 +108,7 @@ int main()
                     printf("Digite um comando SQL (ou 'SAIR' para voltar ao menu principal):\n");
                     fgets(comando, sizeof(comando), stdin);
 
-                    // Remova a quebra de linha
+              
                     comando[strcspn(comando, "\n")] = '\0';
 
                     if (strcmp(comando, "SAIR") != 0) {

@@ -31,7 +31,7 @@ typedef struct PCampos PCampos;
 struct PTabelas
 {
     char Tabela[30];
-    struct PCampos *Patual;
+    struct PCampos *ProxC;
     struct PTabelas *prox, *ant;
 };
 typedef struct PTabelas PTabelas;
@@ -191,7 +191,7 @@ PTabelas *novaCaixaTabela(char nome[])
 {
     PTabelas *nova = (PTabelas *)malloc(sizeof(PTabelas));
     strcpy(nova->Tabela, nome);
-    nova->Patual = NULL;
+    nova->ProxC = NULL;
     nova->prox = nova->ant = NULL;
     return nova;
 }
@@ -252,7 +252,7 @@ void CadastrarCampoNaTabela(PTabelas **Tabela, char nomeTabela[], char nomeCampo
 
     if (tabelaAlvo != NULL)
     {
-        CadastrarCampos(&(tabelaAlvo->Patual), nomeCampo, Tipo, FK);
+        CadastrarCampos(&(tabelaAlvo->ProxC), nomeCampo, Tipo, FK);
     }
 }
 
@@ -290,7 +290,7 @@ void AlterarBanco(pontBD *PontBD, char NovoBanco[])
 // Deletar
 
 //Deletar linha
-void DeletarLinha()
+void DeletarLinha(PCampos *pCampos,union UDados nDado)
 {
     
 }
@@ -403,9 +403,9 @@ void ExibirTabela(PTabelas *tabelas, char nomeTabela[])
     if (tabelaAlvo != NULL)
     {
         printf("Tabela: %s\n", tabelaAlvo->Tabela);
-        ExibirCampos(tabelaAlvo->Patual);
+        ExibirCampos(tabelaAlvo->ProxC);
         // ExibirCamposTabela();
-        ExibirDados(tabelaAlvo->Patual);
+        ExibirDados(tabelaAlvo->ProxC);
         // ExibirDadosTabela();
     }
 }

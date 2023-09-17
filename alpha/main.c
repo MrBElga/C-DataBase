@@ -133,31 +133,31 @@ int main()
 
 	union UDados dado0;
 	dado0.ValorI = 0;
-	CadastrarDadosNaTabela(buscaCampoPorNome(banco->PTabelas->ProxC, "ID"), 'I', dado0);
+	CadastrarDadosNaTabela(buscaCampoPorNome(banco->PTabelas->Pcampos, "ID"), 'I', dado0);
 
 	dado0.ValorI = 25;
-	CadastrarDadosNaTabela(buscaCampoPorNome(banco->PTabelas->ProxC, "Idade"), 'I', dado0);
+	CadastrarDadosNaTabela(buscaCampoPorNome(banco->PTabelas->Pcampos, "Idade"), 'I', dado0);
 
 	strcpy(dado0.ValorT, "Joao");
-	CadastrarDadosNaTabela(buscaCampoPorNome(banco->PTabelas->ProxC, "Nome"), 'T', dado0);
+	CadastrarDadosNaTabela(buscaCampoPorNome(banco->PTabelas->Pcampos, "Nome"), 'T', dado0);
 
 	dado0.ValorI = 1;
-	CadastrarDadosNaTabela(buscaCampoPorNome(banco->PTabelas->ProxC, "ID"), 'I', dado0);
+	CadastrarDadosNaTabela(buscaCampoPorNome(banco->PTabelas->Pcampos, "ID"), 'I', dado0);
 
 	dado0.ValorI = 31;
-	CadastrarDadosNaTabela(buscaCampoPorNome(banco->PTabelas->ProxC, "Idade"), 'I', dado0);
+	CadastrarDadosNaTabela(buscaCampoPorNome(banco->PTabelas->Pcampos, "Idade"), 'I', dado0);
 
 	strcpy(dado0.ValorT, "Jerco");
-	CadastrarDadosNaTabela(buscaCampoPorNome(banco->PTabelas->ProxC, "Nome"), 'T', dado0);
+	CadastrarDadosNaTabela(buscaCampoPorNome(banco->PTabelas->Pcampos, "Nome"), 'T', dado0);
 
 	dado0.ValorI = 2;
-	CadastrarDadosNaTabela(buscaCampoPorNome(banco->PTabelas->ProxC, "ID"), 'I', dado0);
+	CadastrarDadosNaTabela(buscaCampoPorNome(banco->PTabelas->Pcampos, "ID"), 'I', dado0);
 
 	dado0.ValorI = 50;
-	CadastrarDadosNaTabela(buscaCampoPorNome(banco->PTabelas->ProxC, "Idade"), 'I', dado0);
+	CadastrarDadosNaTabela(buscaCampoPorNome(banco->PTabelas->Pcampos, "Idade"), 'I', dado0);
 
 	strcpy(dado0.ValorT, "Raposo");
-	CadastrarDadosNaTabela(buscaCampoPorNome(banco->PTabelas->ProxC, "Nome"), 'T', dado0);
+	CadastrarDadosNaTabela(buscaCampoPorNome(banco->PTabelas->Pcampos, "Nome"), 'T', dado0);
 
 	printf("\nExibindo Dados\n");
 	ExibirTodasAsTabelas(banco);
@@ -165,7 +165,7 @@ int main()
 	union UDados buscaDado;
 	buscaDado.ValorI = 31;
 
-	PDados *resultadoBusca = BuscaDados(buscaCampoPorNome(banco->PTabelas->ProxC, "Idade")->ValorT, buscaDado);
+	PDados *resultadoBusca = BuscaDados(buscaCampoPorNome(banco->PTabelas->Pcampos, "Idade")->ValorT, buscaDado);
 
 	if (resultadoBusca != NULL)
 	{
@@ -178,16 +178,16 @@ int main()
 		printf("\nDado não encontrado.\n");
 	}
 
-	ExibirLinha(&(banco->PTabelas->ProxC));
-	// ExibirLinha(&(banco->PTabelas->ProxC));
+	ExibirLinha(&(banco->PTabelas->Pcampos));
+	// ExibirLinha(&(banco->PTabelas->Pcampos));
 
 	// tratar caso valor nulo
 	strcpy(dado0.ValorT, "Joao");
-	PDados *dadoParaAlterar = BuscaDados(buscaCampoPorNome(banco->PTabelas->ProxC, "Nome")->ValorT, dado0);
+	PDados *dadoParaAlterar = BuscaDados(buscaCampoPorNome(banco->PTabelas->Pcampos, "Nome")->ValorT, dado0);
 	printf("%s", dadoParaAlterar->UDados.ValorT);
 	AlterarDado(dadoParaAlterar, "Turista");
 
-	ExibirLinha(&(banco->PTabelas->ProxC));
+	ExibirLinha(&(banco->PTabelas->Pcampos));
 
 	pontBD *BancoAlt = buscaBancoPorNome(banco, "MeuBanco");
 	AlterarBanco(BancoAlt, "Clientes");
@@ -197,16 +197,16 @@ int main()
 	AlterarTabela(TabAlt, "Clientes0");
 	ExibirTabelas(banco->PTabelas);
 
-	PCampos *CampoAlt = buscaCampoPorNome(buscaTabelaPorNome(banco, "Clientes0")->ProxC, "Idade");
+	PCampos *CampoAlt = buscaCampoPorNome(buscaTabelaPorNome(banco, "Clientes0")->Pcampos, "Idade");
 	AlterarCampo(CampoAlt, "Idade0");
-	ExibirCampo(banco->PTabelas->ProxC, "Idade0");
+	ExibirCampo(banco->PTabelas->Pcampos, "Idade0");
 
 	// exlusão arrumar
 	strcpy(dado0.ValorT, "Jerco");
 	
 	if (strcmp(dadoParaAlterar->UDados.ValorT, dado0.ValorT) == 0)
 		//DeletarDado(&banco->PTabelas, dado0.ValorT);
-	ExibirLinha(&(banco->PTabelas->ProxC));
+	ExibirLinha(&(banco->PTabelas->Pcampos));
 	return 0;
 	free(banco);
 	return 0;

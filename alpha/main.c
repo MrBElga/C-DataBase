@@ -122,92 +122,64 @@ int main()
 	// lerComandos(&banco);
 	printf("\n");
 	// ExibirBancos(banco);
+    CadastrarBanco(&banco, "MeuBanco");
+    CadastrarTabela(&(banco->PTabelas), "Clientes");
 
-	CadastrarBanco(&banco, "MeuBanco");
+    
+    CadastrarCampoNaTabela(&(banco->PTabelas), "Clientes", "ID", 'I', 'S');
+    CadastrarCampoNaTabela(&(banco->PTabelas), "Clientes", "Nome", 'T', 'N');
+    CadastrarCampoNaTabela(&(banco->PTabelas), "Clientes", "Idade", 'I', 'N');
 
-	CadastrarTabela(&(banco->PTabelas), "Clientes");
+  
+    union UDados dado0;
+    dado0.ValorI = 0;
+    CadastrarDadosNaTabela(buscaCampoPorNome(banco->PTabelas->Pcampos, "ID"), 'I', dado0);
 
-	CadastrarCampoNaTabela(&(banco->PTabelas), "Clientes", "ID", 'I', 'S');
-	CadastrarCampoNaTabela(&(banco->PTabelas), "Clientes", "Nome", 'T', 'N');
-	CadastrarCampoNaTabela(&(banco->PTabelas), "Clientes", "Idade", 'I', 'N');
+    dado0.ValorI = 25;
+    CadastrarDadosNaTabela(buscaCampoPorNome(banco->PTabelas->Pcampos, "Idade"), 'I', dado0);
 
-	union UDados dado0;
-	dado0.ValorI = 0;
-	CadastrarDadosNaTabela(buscaCampoPorNome(banco->PTabelas->Pcampos, "ID"), 'I', dado0);
+    strcpy(dado0.ValorT, "Joao");
+    CadastrarDadosNaTabela(buscaCampoPorNome(banco->PTabelas->Pcampos, "Nome"), 'T', dado0);
 
-	dado0.ValorI = 25;
-	CadastrarDadosNaTabela(buscaCampoPorNome(banco->PTabelas->Pcampos, "Idade"), 'I', dado0);
+    dado0.ValorI = 1;
+    CadastrarDadosNaTabela(buscaCampoPorNome(banco->PTabelas->Pcampos, "ID"), 'I', dado0);
 
-	strcpy(dado0.ValorT, "Joao");
-	CadastrarDadosNaTabela(buscaCampoPorNome(banco->PTabelas->Pcampos, "Nome"), 'T', dado0);
+    dado0.ValorI = 31;
+    CadastrarDadosNaTabela(buscaCampoPorNome(banco->PTabelas->Pcampos, "Idade"), 'I', dado0);
 
-	dado0.ValorI = 1;
-	CadastrarDadosNaTabela(buscaCampoPorNome(banco->PTabelas->Pcampos, "ID"), 'I', dado0);
+    strcpy(dado0.ValorT, "Jerco");
+    CadastrarDadosNaTabela(buscaCampoPorNome(banco->PTabelas->Pcampos, "Nome"), 'T', dado0);
 
-	dado0.ValorI = 31;
-	CadastrarDadosNaTabela(buscaCampoPorNome(banco->PTabelas->Pcampos, "Idade"), 'I', dado0);
+    printf("\nTabela antes da exclusao:\n");
+    ExibirTodasAsTabelas(banco);
 
-	strcpy(dado0.ValorT, "Jerco");
-	CadastrarDadosNaTabela(buscaCampoPorNome(banco->PTabelas->Pcampos, "Nome"), 'T', dado0);
+   
+  
+	char nomeCampo[] = "Nome"; 
 
-	dado0.ValorI = 2;
-	CadastrarDadosNaTabela(buscaCampoPorNome(banco->PTabelas->Pcampos, "ID"), 'I', dado0);
+	strcpy(dado0.ValorT, "Joao"); 
+ DeletarLinha(&banco, "Clientes", nomeCampo, dado0);
+   strcpy(dado0.ValorT, "Jerco");
+	DeletarLinha(&banco, "Clientes", nomeCampo, dado0);
 
-	dado0.ValorI = 50;
-	CadastrarDadosNaTabela(buscaCampoPorNome(banco->PTabelas->Pcampos, "Idade"), 'I', dado0);
 
-	strcpy(dado0.ValorT, "Raposo");
-	CadastrarDadosNaTabela(buscaCampoPorNome(banco->PTabelas->Pcampos, "Nome"), 'T', dado0);
+  
+    printf("\nTabela depois da exclusao:\n");
+    ExibirTodasAsTabelas(banco);
 
-	printf("\nExibindo Dados\n");
-	ExibirTodasAsTabelas(banco);
 
-	union UDados buscaDado;
-	buscaDado.ValorI = 31;
+	 dado0.ValorI = 3;
+    CadastrarDadosNaTabela(buscaCampoPorNome(banco->PTabelas->Pcampos, "ID"), 'I', dado0);
 
-	PDados *resultadoBusca = BuscaDados(buscaCampoPorNome(banco->PTabelas->Pcampos, "Idade")->ValorT, buscaDado);
+    dado0.ValorI = 45;
+    CadastrarDadosNaTabela(buscaCampoPorNome(banco->PTabelas->Pcampos, "Idade"), 'I', dado0);
 
-	if (resultadoBusca != NULL)
-	{
-		printf("\nDado encontrado:\n");
-		printf("Campo: Idade\n");
-		printf("Valor: %d\n", resultadoBusca->UDados.ValorI);
-	}
-	else
-	{
-		printf("\nDado não encontrado.\n");
-	}
+    strcpy(dado0.ValorT, "Raposo");
+    CadastrarDadosNaTabela(buscaCampoPorNome(banco->PTabelas->Pcampos, "Nome"), 'T', dado0);
+	printf("\nTabela depois da exclusao e cadastro:\n");
+    ExibirTodasAsTabelas(banco);
+   
+    free(banco);
 
-	ExibirLinha(&(banco->PTabelas->Pcampos));
-	// ExibirLinha(&(banco->PTabelas->Pcampos));
-
-	// tratar caso valor nulo
-	strcpy(dado0.ValorT, "Joao");
-	PDados *dadoParaAlterar = BuscaDados(buscaCampoPorNome(banco->PTabelas->Pcampos, "Nome")->ValorT, dado0);
-	printf("%s", dadoParaAlterar->UDados.ValorT);
-	AlterarDado(dadoParaAlterar, "Turista");
-
-	ExibirLinha(&(banco->PTabelas->Pcampos));
-
-	pontBD *BancoAlt = buscaBancoPorNome(banco, "MeuBanco");
-	AlterarBanco(BancoAlt, "Clientes");
-	ExibirBancos(banco);
-
-	PTabelas *TabAlt = buscaTabelaPorNome(banco, "Clientes");
-	AlterarTabela(TabAlt, "Clientes0");
-	ExibirTabelas(banco->PTabelas);
-
-	PCampos *CampoAlt = buscaCampoPorNome(buscaTabelaPorNome(banco, "Clientes0")->Pcampos, "Idade");
-	AlterarCampo(CampoAlt, "Idade0");
-	ExibirCampo(banco->PTabelas->Pcampos, "Idade0");
-
-	// exlusão arrumar
-	strcpy(dado0.ValorT, "Jerco");
-	
-	if (strcmp(dadoParaAlterar->UDados.ValorT, dado0.ValorT) == 0)
-		//DeletarDado(&banco->PTabelas, dado0.ValorT);
-	ExibirLinha(&(banco->PTabelas->Pcampos));
-	return 0;
-	free(banco);
 	return 0;
 }

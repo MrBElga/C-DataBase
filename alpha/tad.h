@@ -13,18 +13,11 @@ struct PDados
 };
 typedef struct PDados PDados;
 
-struct PAtual
-{
-    struct PDados *PDados;
-};
-typedef struct PAtual PAtual;
-
 struct PCampos
 {
     char Campo[30], Tipo, PK;
-    struct PAtual *FK;
     struct PDados *ValorT, *PAtual;
-    struct PCampos *prox;
+    struct PCampos *prox, *FK;
 };
 typedef struct PCampos PCampos;
 
@@ -218,7 +211,7 @@ void CadastrarTabela(PTabelas **Tabela, char nome[])
 // Cadastrar Banco [OK]
 pontBD *NovoCaixaBanco(char nome[])
 {
-    pontBD *novo = (pontBD*)malloc(sizeof(pontBD));
+    pontBD *novo = (pontBD *)malloc(sizeof(pontBD));
     strcpy(novo->Banco_Dados, nome);
     novo->PTabelas = NULL;
     return novo;
@@ -289,40 +282,187 @@ void AlterarBanco(pontBD *PontBD, char NovoBanco[])
 
 // Deletar
 
-//Deletar linha
-void DeletarLinha(PCampos *pCampos,union UDados nDado)
+// Deletar linha
+
+int compararDados(union UDados dado1, union UDados dado2, char tipoCampo)
 {
-    
+    if (tipoCampo == 'I')
+    {
+        return dado1.ValorI == dado2.ValorI;
+    }
+    else if (tipoCampo == 'N')
+    {
+        return dado1.ValorN == dado2.ValorN;
+    }
+    else if (tipoCampo == 'T')
+    {
+        return strcmp(dado1.ValorT, dado2.ValorT) == 0;
+    }
+    else if (tipoCampo == 'C')
+    {
+        return dado1.ValorC == dado2.ValorC;
+    }
+    else if (tipoCampo == 'D')
+    {
+        return strcmp(dado1.ValorD, dado2.ValorD) == 0;
+    }
+
+    return 1;
+}
+
+void excluirMesmoIndiceOutrosCampos(PCampos *campos, PCampos *campoAtual, PDados *indiceAtual)
+{
+    PCampos *atualCampo = campos;
+
+    while (atualCampo != NULL)
+    {
+        if (atualCampo != campoAtual)
+        {
+            PDados *anterior = NULL, *atual = atualCampo->ValorT;
+            while (atual != NULL)
+            {
+                if (atual == indiceAtual)
+                {
+                    if (anterior != NULL)
+                    {
+                        anterior->prox = atual->prox;
+                        free(atual);
+                    }
+                    else
+                    {
+                        atualCampo->ValorT = atual->prox;
+                        free(atual);
+                    }
+                    break;
+                }
+                anterior = atual;
+                atual = atual->prox;
+            }
+        }
+        atualCampo = atualCampo->prox;
+    }
+}
+
+void DeletarLinha(pontBD **banco, char nomeTabela[], char nomeCampo[], union UDados nDado)
+{
+    PTabelas *aux = buscaTabelaPorNome(*banco, nomeTabela);
+    PCampos *campo;
+    int posicaoDado = -1, pos = -1;
+    PDados *atual;
+    PCampos *atualCampo;
+    PDados *anterior;
+
+    if (aux == NULL)
+    {
+        printf("Tabela %s nao encontrada.\n", nomeTabela);
+    }
+    else
+    {
+
+        campo = buscaCampoPorNome(aux->Pcampos, nomeCampo);
+
+        if (campo == NULL)
+        {
+            printf("Campo %s nao encontrado na tabela %s.\n", nomeCampo, nomeTabela);
+        }
+        else
+        {
+
+            atual = campo->ValorT;
+            anterior = NULL;
+
+            while (atual != NULL)
+            {
+                if (compararDados(atual->UDados, nDado, campo->Tipo))
+                {
+                    if (anterior != NULL)
+                    {
+                        anterior->prox = atual->prox;
+                        free(atual);
+                        atual = anterior->prox;
+                    }
+                    else
+                    {
+                        campo->ValorT = atual->prox;
+                        free(atual);
+                        atual = campo->ValorT;
+                    }
+                    posicaoDado = 0;
+                }
+                else
+                {
+                    anterior = atual;
+                    atual = atual->prox;
+                    posicaoDado++;
+                }
+            }
+            if (posicaoDado != -1)
+            {
+                atualCampo = aux->Pcampos;
+
+                while (atualCampo != NULL)
+                {
+                    atual = atualCampo->ValorT;
+                    anterior = NULL;
+
+                    pos = 0;
+                    while (pos < posicaoDado && atual != NULL)
+                    {
+                        anterior = atual;
+                        atual = atual->prox;
+                        pos++;
+                    }
+
+                    if (atual != NULL)
+                    {
+                        if (anterior != NULL)
+                        {
+                            anterior->prox = atual->prox;
+                            free(atual);
+                        }
+                        else
+                        {
+                            atualCampo->ValorT = atual->prox;
+                            free(atual);
+                        }
+                    }
+
+                    atualCampo = atualCampo->prox;
+                }
+            }
+            else
+            {
+                printf("Registro nao encontrado no campo %s.\n", nomeCampo);
+            }
+        }
+    }
 }
 
 // Campos
 void DeletarCampo()
 {
-
 }
 // Tabelas
 void DeletarTabela()
 {
-
 }
 // Banco
 void DeletarBanco()
-{   
-
+{
 }
-
 
 // exibe os dados
 void ExibirDados(PCampos *pCampos)
 {
     PCampos *atualCampo = pCampos;
+    PDados *dados = NULL;
     while (atualCampo != NULL)
     {
         printf("Campo: %s\n", atualCampo->Campo);
         printf("Tipo: %c\n", atualCampo->Tipo);
         if (atualCampo->ValorT != NULL)
         {
-            PDados *dados = atualCampo->ValorT;
+            dados = atualCampo->ValorT;
             while (dados != NULL)
             {
                 if (atualCampo->Tipo == 'I')

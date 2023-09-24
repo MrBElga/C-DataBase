@@ -487,70 +487,70 @@ void LiberarBanco(pontBD **banco)
     *banco = NULL;
 }
 
-//exibe banco
 void exibir(pontBD *banco)
 {
-    clrscr(); // Limpa a tela
-
-    if (banco == NULL)
-    {
-        printf("## BANCO VAZIO ##\n");
-        return;
-    }
-
-    printf("Banco de Dados: %s\n\n", banco->Banco_Dados);
-
+    clrscr(); 
+	int linha = 4, coluna = 1;
     PTabelas *tabela = banco->PTabelas;
     PCampos *campo = NULL;
     PDados *Dado = NULL;
 
-    int linha = 4, coluna = 1; // Inicializa a posição da linha
-
-    while (tabela != NULL)
+    if (banco == NULL)
     {
-        gotoxy(1, linha);
-        cprintf("Tabela: %s", tabela->Tabela);
-        linha += 2; // Pula uma linha
-
-        campo = tabela->Pcampos;
-        while (campo != NULL)
+    	textcolor(RED);
+        printf("## BANCO VAZIO ##\n");
+    }
+    else
+    {
+    	textcolor(GREEN); 
+        printf("Banco de Dados: %s\n\n", banco->Banco_Dados);
+        
+        while (tabela != NULL)
         {
-            gotoxy(coluna, linha);
-			printf("%s",campo->Campo);
-            Dado = campo->PAtual;
-            linha++;
-            while (Dado != NULL)
+            gotoxy(1, linha);
+            textcolor(YELLOW); 
+            cprintf("Tabela: %s", tabela->Tabela);
+            linha += 2;
+
+            campo = tabela->Pcampos;
+            while (campo != NULL)
             {
                 gotoxy(coluna, linha);
-                if (campo->Tipo == 'I')
-                {
-                    printf("%d", Dado->UDados.ValorI);
-                }
-                else if (campo->Tipo == 'N')
-                {
-                    printf("%.2f", Dado->UDados.ValorN);
-                }
-                else if (campo->Tipo == 'T')
-                {
-                    printf("%s", Dado->UDados.ValorT);
-                }
-                else if (campo->Tipo == 'C')
-                {
-                    printf("%c", Dado->UDados.ValorC);
-                }
+                textcolor(WHITE);
+                printf("%s", campo->Campo);
+                Dado = campo->PAtual;
                 linha++;
-                Dado = Dado->prox;
+                textcolor(LIGHTGREEN);
+                while (Dado != NULL)
+                {
+                	
+                    gotoxy(coluna, linha);
+                    if (campo->Tipo == 'I')
+                    {
+                        printf("%d", Dado->UDados.ValorI);
+                    }
+                    else if (campo->Tipo == 'N')
+                    {
+                        printf("%.2f", Dado->UDados.ValorN);
+                    }
+                    else if (campo->Tipo == 'T')
+                    {
+                        printf("%s", Dado->UDados.ValorT);
+                    }
+                    else if (campo->Tipo == 'C')
+                    {
+                        printf("%c", Dado->UDados.ValorC);
+                    }
+                    linha++;
+                    Dado = Dado->prox;
+                }
+                coluna += 10;
+                linha = 6;
+                campo = campo->prox;
             }
-            coluna+=10;
-            linha = 6;
-            campo = campo->prox;
+            tabela = tabela->prox;
         }
-        tabela = tabela->prox;
     }
 
     getch();
 }
-
-
-
-

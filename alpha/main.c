@@ -117,71 +117,66 @@ void lerComandos(pontBD **b)
 
 int main()
 {
-	pontBD *banco = NULL;
+    pontBD *banco = NULL;
 
-	// lerComandos(&banco);
-	printf("\n");
-	// ExibirBancos(banco);
-    CadastrarBanco(&banco, "MeuBanco");
-    CadastrarTabela(&(banco->PTabelas), "Clientes");
+    // Criar um banco de dados "TestDB"
+    CadastrarBanco(&banco, "TestDB");
 
-    
-    CadastrarCampoNaTabela(&(banco->PTabelas), "Clientes", "ID", 'I', 'S');
-    CadastrarCampoNaTabela(&(banco->PTabelas), "Clientes", "Nome", 'T', 'N');
-    CadastrarCampoNaTabela(&(banco->PTabelas), "Clientes", "Idade", 'I', 'N');
+    // Criar uma tabela "Usuarios"
+    CadastrarTabela(&(banco->PTabelas), "Usuarios");
 
-  
+    // Criar campos na tabela "Usuarios"
+    CadastrarCampoNaTabela(&(banco->PTabelas), "Usuarios", "ID", 'I', 'S');
+    CadastrarCampoNaTabela(&(banco->PTabelas), "Usuarios", "Nome", 'T', 'N');
+    CadastrarCampoNaTabela(&(banco->PTabelas), "Usuarios", "Idade", 'I', 'N');
+
+    // Inserir alguns dados na tabela "Usuarios"
     union UDados dado0;
-    dado0.ValorI = 0;
+    dado0.ValorI = 1;
     CadastrarDadosNaTabela(buscaCampoPorNome(banco->PTabelas->Pcampos, "ID"), 'I', dado0);
-
+    strcpy(dado0.ValorT, "Alice");
+    CadastrarDadosNaTabela(buscaCampoPorNome(banco->PTabelas->Pcampos, "Nome"), 'T', dado0);
     dado0.ValorI = 25;
     CadastrarDadosNaTabela(buscaCampoPorNome(banco->PTabelas->Pcampos, "Idade"), 'I', dado0);
 
-    strcpy(dado0.ValorT, "Joao");
-    CadastrarDadosNaTabela(buscaCampoPorNome(banco->PTabelas->Pcampos, "Nome"), 'T', dado0);
-
-    dado0.ValorI = 1;
+    dado0.ValorI = 2;
     CadastrarDadosNaTabela(buscaCampoPorNome(banco->PTabelas->Pcampos, "ID"), 'I', dado0);
-
-    dado0.ValorI = 31;
+    strcpy(dado0.ValorT, "Bob");
+    CadastrarDadosNaTabela(buscaCampoPorNome(banco->PTabelas->Pcampos, "Nome"), 'T', dado0);
+    dado0.ValorI = 30;
     CadastrarDadosNaTabela(buscaCampoPorNome(banco->PTabelas->Pcampos, "Idade"), 'I', dado0);
 
-    strcpy(dado0.ValorT, "Jerco");
-    CadastrarDadosNaTabela(buscaCampoPorNome(banco->PTabelas->Pcampos, "Nome"), 'T', dado0);
-	
-	dado0.ValorI = 2;
+    dado0.ValorI = 3;
     CadastrarDadosNaTabela(buscaCampoPorNome(banco->PTabelas->Pcampos, "ID"), 'I', dado0);
-
-    dado0.ValorI = 45;
+    strcpy(dado0.ValorT, "Charlie");
+    CadastrarDadosNaTabela(buscaCampoPorNome(banco->PTabelas->Pcampos, "Nome"), 'T', dado0);
+    dado0.ValorI = 35;
     CadastrarDadosNaTabela(buscaCampoPorNome(banco->PTabelas->Pcampos, "Idade"), 'I', dado0);
 
-    strcpy(dado0.ValorT, "Raposo");
-    CadastrarDadosNaTabela(buscaCampoPorNome(banco->PTabelas->Pcampos, "Nome"), 'T', dado0);
-    printf("\nTabela antes da exclusao:\n");
+    // Exibir a tabela antes das exclusões
+    printf("Tabela antes das exclusoes:\n");
     ExibirTodasAsTabelas(banco);
 
-   
-  
-	char nomeCampo[] = "Nome"; 
+    // Deletar um campo da tabela "Usuarios"
+    char nomeCampo[] = "Nome";
+    DeletarCampo(&(banco->PTabelas->Pcampos), nomeCampo);
 
-	strcpy(dado0.ValorT, "Joao"); 
- 	DeletarLinha(&banco, "Clientes", nomeCampo, dado0);
-    strcpy(dado0.ValorT, "Jerco");
-	DeletarLinha(&banco, "Clientes", nomeCampo, dado0);
-
-
-  
-    printf("\nTabela depois da exclusao:\n");
+    // Exibir a tabela após a exclusão do campo
+    printf("\nTabela apos a exclusao do campo 'Nome':\n");
     ExibirTodasAsTabelas(banco);
 
-	printf("\nTabela depois da exclusao e cadastro:\n");
-   
-   	//AlterarCampoTipo(buscaCampoPorNome(banco->PTabelas->Pcampos, "Idade"),'T');
-	//AlterarCamposPK(buscaCampoPorNome(banco->PTabelas->Pcampos, "Idade"),'S');
+    // Apagar a tabela "Usuarios"
+    char nomeTabela[] = "Usuarios";
+    DeletarTabela(banco, nomeTabela);
 
-	ExibirTodasAsTabelas(banco);
-    free(banco);
+    // Exibir o banco de dados após a exclusão da tabela
+    printf("\nBanco de dados apos a exclusao da tabela 'Usuarios':\n");
+    ExibirTodasAsTabelas(banco);
 
-	return 0;
+    // Liberar o banco de dados
+    LiberarBanco(&banco);
+
+    printf("\nBanco de dados apos excluir o banco':\n");
+	ExibirBancos(banco);
+    return 0;
 }

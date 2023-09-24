@@ -398,18 +398,98 @@ void DeletarLinha(pontBD **banco, char nomeTabela[], char nomeCampo[], union UDa
 }
 
 // Campos
-void DeletarCampo()
+
+void ApagarDados(PDados *pDados)
 {
-}
-// Tabelas
-void DeletarTabela()
-{
-}
-// Banco
-void DeletarBanco()
-{
+    PDados *atual = pDados,*aux = NULL;
+    while (atual != NULL)
+    {
+        aux = atual->prox;
+        free(atual);
+        atual = aux;
+    }
 }
 
+void DeletarCampo(PCampos **pCampos, char nomeCampo[])
+{
+    PCampos *atual = *pCampos,*anterior = NULL;
+
+    while (atual != NULL)
+    {
+        if (strcmp(atual->Campo, nomeCampo) == 0)
+        {
+            if (anterior != NULL)
+                anterior->prox = atual->prox;
+            else
+                *pCampos = atual->prox;
+           
+            ApagarDados(atual->Valor);
+            atual = NULL;
+        }
+        else
+        {
+            anterior = atual;
+            atual = atual->prox;
+        }
+    }
+}
+
+
+
+// Função para deletar uma tabela de um banco de dados
+void ApagarTabela(PTabelas *tabela)
+{
+    PCampos *atualCampo = tabela->Pcampos,*prox = NULL;
+    while (atualCampo != NULL)
+    {
+        prox = atualCampo;
+        DeletarCampo(&atualCampo,atualCampo->Campo);
+        atualCampo = prox->prox;
+    }
+    free(tabela);
+}
+
+void DeletarTabela(pontBD *banco, char nomeTabela[])
+{
+    PTabelas *atualTabela = banco->PTabelas;
+    PTabelas *anterior = NULL;
+
+    while (atualTabela != NULL)
+    {
+        if (strcmp(atualTabela->Tabela, nomeTabela) == 0)
+        {
+            if (anterior != NULL)
+            {
+                anterior->prox = atualTabela->prox;
+            }
+            else
+            {
+                banco->PTabelas = atualTabela->prox;
+            }
+            ApagarTabela(atualTabela);
+        }
+
+        anterior = atualTabela;
+        atualTabela = atualTabela->prox;
+    }
+}
+
+
+// Função para deletar um banco de dados
+void LiberarBanco(pontBD **banco)
+{
+    pontBD *aux = *banco;
+    PTabelas *atualTabela = (*banco)->PTabelas,*prox = NULL;
+    while (atualTabela != NULL)
+    {
+        prox = atualTabela->prox;
+        ApagarTabela(atualTabela);
+        atualTabela = prox;
+    }
+    free(aux);
+    *banco = NULL;
+  
+}
 // exibe os dados
 void ExibirDados(PCampos *pCampos)
 {
@@ -477,7 +557,10 @@ void ExibirCampo(PCampos *pCampos, char Nome[])
 void ExibirBancos(pontBD *bancos)
 {
     pontBD *atualBanco = bancos;
-    printf("Banco: %s\n", atualBanco->Banco_Dados);
+    if(atualBanco!=NULL)
+        printf("Banco: %s\n", atualBanco->Banco_Dados);
+    else
+        printf("nao existe banco\n");
 }
 
 // Função para exibir todas as tabelas de um banco
@@ -515,14 +598,16 @@ void ExibirTodasAsTabelas(pontBD *bancos)
 {
     pontBD *atualBanco = bancos;
     PTabelas *atualTabela = atualBanco->PTabelas;
-
+	
     printf("Banco: %s\n", atualBanco->Banco_Dados);
-
-    while (atualTabela != NULL)
-    {
-        ExibirTabela(bancos->PTabelas, atualTabela->Tabela);
-        atualTabela = atualTabela->prox;
-    }
+	if(atualTabela==NULL)
+		printf("Banco vazio");
+	else
+	    while (atualTabela != NULL)
+	    {
+	        ExibirTabela(bancos->PTabelas, atualTabela->Tabela);
+	        atualTabela = atualTabela->prox;
+	    }
 }
 
 void ExibirLinha(PCampos **pCampos)

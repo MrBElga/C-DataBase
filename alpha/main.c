@@ -176,8 +176,11 @@ int main()
     ExibirTodasAsTabelas(banco);
 
 	printf("\nTabela depois da exclusao e cadastro:\n");
-    ExibirTodasAsTabelas(banco);
    
+   	//AlterarCampoTipo(buscaCampoPorNome(banco->PTabelas->Pcampos, "Idade"),'T');
+	//AlterarCamposPK(buscaCampoPorNome(banco->PTabelas->Pcampos, "Idade"),'S');
+
+	ExibirTodasAsTabelas(banco);
     free(banco);
 
 	return 0;

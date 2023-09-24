@@ -269,6 +269,21 @@ void AlterarCampo(PCampos *pCampos, char NovoCampo[])
 {
     strcpy(pCampos->Campo, NovoCampo);
 }
+
+void AlterarCampoTipo(PCampos *pCampos,char Tipo)
+{
+    pCampos->Tipo = Tipo;
+}
+
+void AlterarCamposPK(PCampos *pCampos,char PK)
+{
+     pCampos->PK = PK;
+}
+
+void AlterarCamposFK(PCampos *pCampos, PCampos *NovaFK)
+{
+    pCampos->FK = NovaFK;
+}
 // Tabelas
 void AlterarTabela(PTabelas *pTabela, char NovoTabela[])
 {
@@ -404,6 +419,7 @@ void ExibirDados(PCampos *pCampos)
     {
         printf("Campo: %s\n", atualCampo->Campo);
         printf("Tipo: %c\n", atualCampo->Tipo);
+        printf("PK: %c\n", atualCampo->PK);
         if (atualCampo->Valor != NULL)
         {
             dados = atualCampo->Valor;

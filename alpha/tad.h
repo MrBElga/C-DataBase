@@ -270,14 +270,14 @@ void AlterarCampo(PCampos *pCampos, char NovoCampo[])
     strcpy(pCampos->Campo, NovoCampo);
 }
 
-void AlterarCampoTipo(PCampos *pCampos,char Tipo)
+void AlterarCampoTipo(PCampos *pCampos, char Tipo)
 {
     pCampos->Tipo = Tipo;
 }
 
-void AlterarCamposPK(PCampos *pCampos,char PK)
+void AlterarCamposPK(PCampos *pCampos, char PK)
 {
-     pCampos->PK = PK;
+    pCampos->PK = PK;
 }
 
 void AlterarCamposFK(PCampos *pCampos, PCampos *NovaFK)
@@ -327,8 +327,8 @@ void ExcluirLinhaCampo(PCampos *campo, union UDados valor, PTabelas *tabela)
 {
     PDados *anterior = NULL;
     PCampos *auxC = tabela->Pcampos;
-    int pos = -1, aux = 0,flag = 0;
-    while (campo->PAtual != NULL && flag!=1)
+    int pos = -1, aux = 0, flag = 0;
+    while (campo->PAtual != NULL && flag != 1)
     {
         if (compararDados(campo->PAtual->UDados, valor, campo->Tipo))
         {
@@ -336,30 +336,30 @@ void ExcluirLinhaCampo(PCampos *campo, union UDados valor, PTabelas *tabela)
                 anterior->prox = campo->PAtual->prox;
             else
                 campo->Valor = campo->PAtual->prox;
-            flag=1;
+            flag = 1;
         }
         pos++;
         anterior = campo->PAtual;
         campo->PAtual = campo->PAtual->prox;
     }
-    printf("%d \t %d\n", pos,flag);
+    printf("%d \t %d\n", pos, flag);
     if (flag == 1)
     {
         while (auxC != NULL)
         {
-            if (strcmp(auxC->Campo,campo->Campo)!=0)
+            if (strcmp(auxC->Campo, campo->Campo) != 0)
             {
-                if(pos == 0)
+                if (pos == 0)
                 {
-                    if(auxC->PAtual->prox!=NULL)
+                    if (auxC->PAtual->prox != NULL)
                         auxC->Valor = auxC->PAtual->prox;
-                    else 
+                    else
                         auxC->Valor = NULL;
                 }
                 else
                 {
                     aux = 0;
-                    while (aux<pos && auxC->PAtual->prox!=NULL)
+                    while (aux < pos && auxC->PAtual->prox != NULL)
                     {
                         anterior = auxC->PAtual;
                         auxC->PAtual = auxC->PAtual->prox;
@@ -368,9 +368,9 @@ void ExcluirLinhaCampo(PCampos *campo, union UDados valor, PTabelas *tabela)
 
                     if (anterior != NULL)
                         anterior->prox = auxC->PAtual->prox;
-                    }
+                }
             }
-			auxC->PAtual = auxC->Valor;
+            auxC->PAtual = auxC->Valor;
             auxC = auxC->prox;
         }
     }
@@ -401,7 +401,7 @@ void DeletarLinha(pontBD **banco, char nomeTabela[], char nomeCampo[], union UDa
 
 void ApagarDados(PDados *pDados)
 {
-    PDados *atual = pDados,*aux = NULL;
+    PDados *atual = pDados, *aux = NULL;
     while (atual != NULL)
     {
         aux = atual->prox;
@@ -412,7 +412,7 @@ void ApagarDados(PDados *pDados)
 
 void DeletarCampo(PCampos **pCampos, char nomeCampo[])
 {
-    PCampos *atual = *pCampos,*anterior = NULL;
+    PCampos *atual = *pCampos, *anterior = NULL;
 
     while (atual != NULL)
     {
@@ -422,7 +422,7 @@ void DeletarCampo(PCampos **pCampos, char nomeCampo[])
                 anterior->prox = atual->prox;
             else
                 *pCampos = atual->prox;
-           
+
             ApagarDados(atual->Valor);
             atual = NULL;
         }
@@ -434,16 +434,14 @@ void DeletarCampo(PCampos **pCampos, char nomeCampo[])
     }
 }
 
-
-
 // Função para deletar uma tabela de um banco de dados
 void ApagarTabela(PTabelas *tabela)
 {
-    PCampos *atualCampo = tabela->Pcampos,*prox = NULL;
+    PCampos *atualCampo = tabela->Pcampos, *prox = NULL;
     while (atualCampo != NULL)
     {
         prox = atualCampo;
-        DeletarCampo(&atualCampo,atualCampo->Campo);
+        DeletarCampo(&atualCampo, atualCampo->Campo);
         atualCampo = prox->prox;
     }
     free(tabela);
@@ -474,12 +472,11 @@ void DeletarTabela(pontBD *banco, char nomeTabela[])
     }
 }
 
-
 // Função para deletar um banco de dados
 void LiberarBanco(pontBD **banco)
 {
     pontBD *aux = *banco;
-    PTabelas *atualTabela = (*banco)->PTabelas,*prox = NULL;
+    PTabelas *atualTabela = (*banco)->PTabelas, *prox = NULL;
     while (atualTabela != NULL)
     {
         prox = atualTabela->prox;
@@ -488,175 +485,72 @@ void LiberarBanco(pontBD **banco)
     }
     free(aux);
     *banco = NULL;
-  
 }
-// exibe os dados
-void ExibirDados(PCampos *pCampos)
+
+//exibe banco
+void exibir(pontBD *banco)
 {
-    PCampos *atualCampo = pCampos;
-    PDados *dados = NULL;
-    while (atualCampo != NULL)
+    clrscr(); // Limpa a tela
+
+    if (banco == NULL)
     {
-        printf("Campo: %s\n", atualCampo->Campo);
-        printf("Tipo: %c\n", atualCampo->Tipo);
-        printf("PK: %c\n", atualCampo->PK);
-        if (atualCampo->Valor != NULL)
+        printf("## BANCO VAZIO ##\n");
+        return;
+    }
+
+    printf("Banco de Dados: %s\n\n", banco->Banco_Dados);
+
+    PTabelas *tabela = banco->PTabelas;
+    PCampos *campo = NULL;
+    PDados *Dado = NULL;
+
+    int linha = 4, coluna = 1; // Inicializa a posi��o da linha
+
+    while (tabela != NULL)
+    {
+        gotoxy(1, linha);
+        cprintf("Tabela: %s", tabela->Tabela);
+        linha += 2; // Pula uma linha
+
+        campo = tabela->Pcampos;
+        while (campo != NULL)
         {
-            dados = atualCampo->Valor;
-            while (dados != NULL)
+            gotoxy(coluna, linha);
+			printf("%s",campo->Campo);
+            Dado = campo->PAtual;
+            linha++;
+            while (Dado != NULL)
             {
-                if (atualCampo->Tipo == 'I')
+                gotoxy(coluna, linha);
+                if (campo->Tipo == 'I')
                 {
-                    printf("Valor: %d\n", dados->UDados.ValorI);
+                    printf("%d", Dado->UDados.ValorI);
                 }
-                else if (atualCampo->Tipo == 'N')
+                else if (campo->Tipo == 'N')
                 {
-                    printf("Valor: %.2f\n", dados->UDados.ValorN);
+                    printf("%.2f", Dado->UDados.ValorN);
                 }
-                else if (atualCampo->Tipo == 'T')
+                else if (campo->Tipo == 'T')
                 {
-                    printf("Valor: %s\n", dados->UDados.ValorT);
+                    printf("%s", Dado->UDados.ValorT);
                 }
-                else if (atualCampo->Tipo == 'C')
+                else if (campo->Tipo == 'C')
                 {
-                    printf("Valor: %c\n", dados->UDados.ValorC);
+                    printf("%c", Dado->UDados.ValorC);
                 }
-                dados = dados->prox;
+                linha++;
+                Dado = Dado->prox;
             }
+            coluna+=10;
+            linha = 6;
+            campo = campo->prox;
         }
-        printf("\n");
-        atualCampo = atualCampo->prox;
-    }
-}
-
-// exibe os campos
-void ExibirCampos(PCampos *pCampos)
-{
-    PCampos *atual = pCampos;
-    while (atual != NULL)
-    {
-        printf("%s \t", atual->Campo);
-        atual = atual->prox;
-    }
-    printf("\n");
-}
-
-void ExibirCampo(PCampos *pCampos, char Nome[])
-{
-    PCampos *atual = pCampos;
-    while (atual != NULL)
-    {
-        if (strcmp(atual->Campo, Nome) == 0)
-            printf("Campo: %s", atual->Campo);
-        atual = atual->prox;
-    }
-    printf("\n");
-}
-
-// Função para exibir todos os bancos
-void ExibirBancos(pontBD *bancos)
-{
-    pontBD *atualBanco = bancos;
-    if(atualBanco!=NULL)
-        printf("Banco: %s\n", atualBanco->Banco_Dados);
-    else
-        printf("nao existe banco\n");
-}
-
-// Função para exibir todas as tabelas de um banco
-void ExibirTabelas(PTabelas *tabelas)
-{
-    PTabelas *atualTabela = tabelas;
-    while (atualTabela != NULL)
-    {
-        printf("Tabela: %s\n", atualTabela->Tabela);
-        atualTabela = atualTabela->prox;
-    }
-}
-
-// Função para exibir campos e dados de uma tabela específica
-void ExibirTabela(PTabelas *tabelas, char nomeTabela[])
-{
-    PTabelas *tabelaAlvo = tabelas;
-    while (tabelaAlvo != NULL && strcmp(tabelaAlvo->Tabela, nomeTabela) != 0)
-    {
-        tabelaAlvo = tabelaAlvo->prox;
+        tabela = tabela->prox;
     }
 
-    if (tabelaAlvo != NULL)
-    {
-        printf("Tabela: %s\n", tabelaAlvo->Tabela);
-        ExibirCampos(tabelaAlvo->Pcampos);
-        // ExibirCamposTabela();
-        ExibirDados(tabelaAlvo->Pcampos);
-        // ExibirDadosTabela();
-    }
+    getch();
 }
 
-// Função para exibir todos os detalhes das tabelas
-void ExibirTodasAsTabelas(pontBD *bancos)
-{
-    pontBD *atualBanco = bancos;
-    PTabelas *atualTabela = atualBanco->PTabelas;
-	
-    printf("Banco: %s\n", atualBanco->Banco_Dados);
-	if(atualTabela==NULL)
-		printf("Banco vazio");
-	else
-	    while (atualTabela != NULL)
-	    {
-	        ExibirTabela(bancos->PTabelas, atualTabela->Tabela);
-	        atualTabela = atualTabela->prox;
-	    }
-}
 
-void ExibirLinha(PCampos **pCampos)
-{
-    char flag = '1';
-    union UDados Dados;
-    PCampos *atualCampo = *pCampos;
 
-    ExibirCampos(*pCampos);
 
-    while (flag == '1')
-    {
-        while (atualCampo != NULL)
-        {
-            flag = '0';
-            if (atualCampo->PAtual != NULL)
-            {
-                flag = '1';
-
-                Dados = atualCampo->PAtual->UDados;
-
-                if (atualCampo->Tipo == 'I')
-                {
-                    printf("%d \t", Dados.ValorI);
-                }
-                else if (atualCampo->Tipo == 'N')
-                {
-                    printf("%.2f \t", Dados.ValorN);
-                }
-                else if (atualCampo->Tipo == 'T')
-                {
-                    printf("%s \t", Dados.ValorT);
-                }
-                else if (atualCampo->Tipo == 'C')
-                {
-                    printf("%c \t", Dados.ValorC);
-                }
-
-                atualCampo->PAtual = atualCampo->PAtual->prox;
-            }
-            atualCampo = atualCampo->prox;
-        }
-        atualCampo = *pCampos;
-        printf("\n");
-    }
-    atualCampo = *pCampos;
-    while (atualCampo != NULL)
-    {
-        atualCampo->PAtual = atualCampo->Valor;
-        atualCampo = atualCampo->prox;
-    }
-}

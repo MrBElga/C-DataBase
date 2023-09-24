@@ -152,31 +152,7 @@ int main()
     CadastrarDadosNaTabela(buscaCampoPorNome(banco->PTabelas->Pcampos, "Nome"), 'T', dado0);
     dado0.ValorI = 35;
     CadastrarDadosNaTabela(buscaCampoPorNome(banco->PTabelas->Pcampos, "Idade"), 'I', dado0);
-
-    // Exibir a tabela antes das exclusões
-    printf("Tabela antes das exclusoes:\n");
-    ExibirTodasAsTabelas(banco);
-
-    // Deletar um campo da tabela "Usuarios"
-    char nomeCampo[] = "Nome";
-    DeletarCampo(&(banco->PTabelas->Pcampos), nomeCampo);
-
-    // Exibir a tabela após a exclusão do campo
-    printf("\nTabela apos a exclusao do campo 'Nome':\n");
-    ExibirTodasAsTabelas(banco);
-
-    // Apagar a tabela "Usuarios"
-    char nomeTabela[] = "Usuarios";
-    DeletarTabela(banco, nomeTabela);
-
-    // Exibir o banco de dados após a exclusão da tabela
-    printf("\nBanco de dados apos a exclusao da tabela 'Usuarios':\n");
-    ExibirTodasAsTabelas(banco);
-
-    // Liberar o banco de dados
-    LiberarBanco(&banco);
-
-    printf("\nBanco de dados apos excluir o banco':\n");
-	ExibirBancos(banco);
+	exibir(banco);
+	
     return 0;
 }

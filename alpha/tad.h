@@ -16,7 +16,7 @@ typedef struct PDados PDados;
 struct PCampos
 {
     char Campo[30], Tipo, PK;
-    struct PDados *ValorT, *PAtual;
+    struct PDados *Valor, *PAtual;
     struct PCampos *prox, *FK;
 };
 typedef struct PCampos PCampos;
@@ -154,7 +154,7 @@ PCampos *novoCaixaCampo(char nome[], char Tipo, char PK)
     nova->prox = NULL;
     nova->FK = NULL;
     nova->PAtual = NULL;
-    nova->ValorT = NULL;
+    nova->Valor = NULL;
     nova->Tipo = Tipo;
     nova->PK = PK;
     strcpy(nova->Campo, nome);
@@ -252,9 +252,9 @@ void CadastrarCampoNaTabela(PTabelas **Tabela, char nomeTabela[], char nomeCampo
 // Função para cadastrar dados em um campo de uma tabela
 void CadastrarDadosNaTabela(PCampos *campos, char Tipo, union UDados nDado)
 {
-    CadastrarDados(&(campos->ValorT), Tipo, nDado);
-    if (campos->ValorT->prox == NULL)
-        campos->PAtual = campos->ValorT;
+    CadastrarDados(&(campos->Valor), Tipo, nDado);
+    if (campos->Valor->prox == NULL)
+        campos->PAtual = campos->Valor;
 }
 
 // Alterar
@@ -282,8 +282,7 @@ void AlterarBanco(pontBD *PontBD, char NovoBanco[])
 
 // Deletar
 
-// Deletar linha
-
+// deletar linha
 int compararDados(union UDados dado1, union UDados dado2, char tipoCampo)
 {
     if (tipoCampo == 'I')
@@ -306,134 +305,79 @@ int compararDados(union UDados dado1, union UDados dado2, char tipoCampo)
     {
         return strcmp(dado1.ValorD, dado2.ValorD) == 0;
     }
-
-    return 1;
+    return 0;
 }
 
-void excluirMesmoIndiceOutrosCampos(PCampos *campos, PCampos *campoAtual, PDados *indiceAtual)
+void ExcluirLinhaCampo(PCampos *campo, union UDados valor, PTabelas *tabela)
 {
-    PCampos *atualCampo = campos;
-
-    while (atualCampo != NULL)
+    PDados *anterior = NULL;
+    PCampos *auxC = tabela->Pcampos;
+    int pos = -1, aux = 0,flag = 0;
+    while (campo->PAtual != NULL && flag!=1)
     {
-        if (atualCampo != campoAtual)
+        if (compararDados(campo->PAtual->UDados, valor, campo->Tipo))
         {
-            PDados *anterior = NULL, *atual = atualCampo->ValorT;
-            while (atual != NULL)
-            {
-                if (atual == indiceAtual)
-                {
-                    if (anterior != NULL)
-                    {
-                        anterior->prox = atual->prox;
-                        free(atual);
-                    }
-                    else
-                    {
-                        atualCampo->ValorT = atual->prox;
-                        free(atual);
-                    }
-                    break;
-                }
-                anterior = atual;
-                atual = atual->prox;
-            }
+            if (anterior != NULL)
+                anterior->prox = campo->PAtual->prox;
+            else
+                campo->Valor = campo->PAtual->prox;
+            flag=1;
         }
-        atualCampo = atualCampo->prox;
+        pos++;
+        anterior = campo->PAtual;
+        campo->PAtual = campo->PAtual->prox;
+    }
+    printf("%d \t %d\n", pos,flag);
+    if (flag == 1)
+    {
+        while (auxC != NULL)
+        {
+            if (strcmp(auxC->Campo,campo->Campo)!=0)
+            {
+                if(pos == 0)
+                {
+                    if(auxC->PAtual->prox!=NULL)
+                        auxC->Valor = auxC->PAtual->prox;
+                    else 
+                        auxC->Valor = NULL;
+                }
+                else
+                {
+                    aux = 0;
+                    while (aux<pos && auxC->PAtual->prox!=NULL)
+                    {
+                        anterior = auxC->PAtual;
+                        auxC->PAtual = auxC->PAtual->prox;
+                        aux++;
+                    }
+
+                    if (anterior != NULL)
+                        anterior->prox = auxC->PAtual->prox;
+                    }
+            }
+			auxC->PAtual = auxC->Valor;
+            auxC = auxC->prox;
+        }
     }
 }
 
-void DeletarLinha(pontBD **banco, char nomeTabela[], char nomeCampo[], union UDados nDado)
+void DeletarLinha(pontBD **banco, char nomeTabela[], char nomeCampo[], union UDados valor)
 {
-    PTabelas *aux = buscaTabelaPorNome(*banco, nomeTabela);
-    PCampos *campo;
-    int posicaoDado = -1, pos = -1;
-    PDados *atual;
-    PCampos *atualCampo;
-    PDados *anterior;
-
-    if (aux == NULL)
+    PTabelas *tabela = buscaTabelaPorNome(*banco, nomeTabela);
+    PCampos *campo = buscaCampoPorNome(tabela->Pcampos, nomeCampo);
+    if (tabela == NULL)
     {
         printf("Tabela %s nao encontrada.\n", nomeTabela);
     }
     else
     {
-
-        campo = buscaCampoPorNome(aux->Pcampos, nomeCampo);
-
         if (campo == NULL)
         {
             printf("Campo %s nao encontrado na tabela %s.\n", nomeCampo, nomeTabela);
         }
         else
         {
-
-            atual = campo->ValorT;
-            anterior = NULL;
-
-            while (atual != NULL)
-            {
-                if (compararDados(atual->UDados, nDado, campo->Tipo))
-                {
-                    if (anterior != NULL)
-                    {
-                        anterior->prox = atual->prox;
-                        free(atual);
-                        atual = anterior->prox;
-                    }
-                    else
-                    {
-                        campo->ValorT = atual->prox;
-                        free(atual);
-                        atual = campo->ValorT;
-                    }
-                    posicaoDado = 0;
-                }
-                else
-                {
-                    anterior = atual;
-                    atual = atual->prox;
-                    posicaoDado++;
-                }
-            }
-            if (posicaoDado != -1)
-            {
-                atualCampo = aux->Pcampos;
-
-                while (atualCampo != NULL)
-                {
-                    atual = atualCampo->ValorT;
-                    anterior = NULL;
-
-                    pos = 0;
-                    while (pos < posicaoDado && atual != NULL)
-                    {
-                        anterior = atual;
-                        atual = atual->prox;
-                        pos++;
-                    }
-
-                    if (atual != NULL)
-                    {
-                        if (anterior != NULL)
-                        {
-                            anterior->prox = atual->prox;
-                            free(atual);
-                        }
-                        else
-                        {
-                            atualCampo->ValorT = atual->prox;
-                            free(atual);
-                        }
-                    }
-
-                    atualCampo = atualCampo->prox;
-                }
-            }
-            else
-            {
-                printf("Registro nao encontrado no campo %s.\n", nomeCampo);
-            }
+            ExcluirLinhaCampo(campo, valor, tabela);
         }
     }
 }
@@ -460,9 +404,9 @@ void ExibirDados(PCampos *pCampos)
     {
         printf("Campo: %s\n", atualCampo->Campo);
         printf("Tipo: %c\n", atualCampo->Tipo);
-        if (atualCampo->ValorT != NULL)
+        if (atualCampo->Valor != NULL)
         {
-            dados = atualCampo->ValorT;
+            dados = atualCampo->Valor;
             while (dados != NULL)
             {
                 if (atualCampo->Tipo == 'I')
@@ -611,7 +555,7 @@ void ExibirLinha(PCampos **pCampos)
     atualCampo = *pCampos;
     while (atualCampo != NULL)
     {
-        atualCampo->PAtual = atualCampo->ValorT;
+        atualCampo->PAtual = atualCampo->Valor;
         atualCampo = atualCampo->prox;
     }
 }

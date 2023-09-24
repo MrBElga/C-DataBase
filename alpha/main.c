@@ -149,7 +149,15 @@ int main()
 
     strcpy(dado0.ValorT, "Jerco");
     CadastrarDadosNaTabela(buscaCampoPorNome(banco->PTabelas->Pcampos, "Nome"), 'T', dado0);
+	
+	dado0.ValorI = 2;
+    CadastrarDadosNaTabela(buscaCampoPorNome(banco->PTabelas->Pcampos, "ID"), 'I', dado0);
 
+    dado0.ValorI = 45;
+    CadastrarDadosNaTabela(buscaCampoPorNome(banco->PTabelas->Pcampos, "Idade"), 'I', dado0);
+
+    strcpy(dado0.ValorT, "Raposo");
+    CadastrarDadosNaTabela(buscaCampoPorNome(banco->PTabelas->Pcampos, "Nome"), 'T', dado0);
     printf("\nTabela antes da exclusao:\n");
     ExibirTodasAsTabelas(banco);
 
@@ -158,8 +166,8 @@ int main()
 	char nomeCampo[] = "Nome"; 
 
 	strcpy(dado0.ValorT, "Joao"); 
- DeletarLinha(&banco, "Clientes", nomeCampo, dado0);
-   strcpy(dado0.ValorT, "Jerco");
+ 	DeletarLinha(&banco, "Clientes", nomeCampo, dado0);
+    strcpy(dado0.ValorT, "Jerco");
 	DeletarLinha(&banco, "Clientes", nomeCampo, dado0);
 
 
@@ -167,15 +175,6 @@ int main()
     printf("\nTabela depois da exclusao:\n");
     ExibirTodasAsTabelas(banco);
 
-
-	 dado0.ValorI = 3;
-    CadastrarDadosNaTabela(buscaCampoPorNome(banco->PTabelas->Pcampos, "ID"), 'I', dado0);
-
-    dado0.ValorI = 45;
-    CadastrarDadosNaTabela(buscaCampoPorNome(banco->PTabelas->Pcampos, "Idade"), 'I', dado0);
-
-    strcpy(dado0.ValorT, "Raposo");
-    CadastrarDadosNaTabela(buscaCampoPorNome(banco->PTabelas->Pcampos, "Nome"), 'T', dado0);
 	printf("\nTabela depois da exclusao e cadastro:\n");
     ExibirTodasAsTabelas(banco);
    

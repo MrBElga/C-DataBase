@@ -505,13 +505,13 @@ void exibir(pontBD *banco)
     	textcolor(GREEN); 
         printf("Banco de Dados: %s\n\n", banco->Banco_Dados);
         
-        while (tabela != NULL)
+        while (tabela)
         {
             gotoxy(1, linha);
             textcolor(YELLOW); 
             cprintf("Tabela: %s", tabela->Tabela);
             linha += 2;
-
+//
             campo = tabela->Pcampos;
             while (campo != NULL)
             {

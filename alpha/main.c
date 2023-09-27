@@ -7,152 +7,330 @@
 void clearString(char line[])
 {
 	int i;
-	for (i = 0; i < strlen(line); i++)
-		line[i] = ' ';
+	for(i=0;i<strlen(line);i++)
+		line[i] =' ';
+}
+
+void removeSpace(char *tipo){
+	int i,cont=0,j=0;
+	
+	for(i=0;i<strlen(tipo);i++)
+	{
+		if(tipo[i]==' ')
+			cont++;
+		
+		if(cont <=1 && tipo[i]!=' ')
+		{
+			tipo[j] = tipo[i];
+			j++;
+		}
+			
+	}
+	
 }
 char getComando(char line[50], char comando[50])
 {
-	int cont = 0, i;
-	char flag = 1;
-	for (i = 0; i < strlen(comando) && cont <= 1; i++)
-	{
-
-		if (comando[i] != line[i])
-			flag = 0;
-
-		if (line[i] == ' ')
-			cont++;
-	}
+	int cont =0,i;
+	char flag=1;
+	for(i=0;i<strlen(comando) && cont <=1;i++){
+		
+			
+		if(comando[i]!=line[i])
+			flag=0;
+			
+		if(line[i]==' ')
+			cont++;	
+	}	
 	return flag;
-}
-void getNomeCampo(char line[50], char *aux)
-{
-	int i = 0;
-	int cont = 0;
-	for (i = 0; i < strlen(line) && cont <= 1; i++)
-	{
-		if (line[i] == ' ')
-			cont++;
 
-		aux[i] = line[i];
+}
+void getNomeCampo(char line[50],char *aux)
+{
+	int i=0,j=0;
+	int cont=0;
+	char nome[50];
+	for(i=0;i<strlen(line) && cont <=1 ;i++)
+	{		
+		if(line[i]==' ')
+		  cont++;
+		
+		if(line[i]!=' ')
+		{
+			aux[j] = line[i];
+			j++;	
+		}
+				
 	}
+	aux[j] = '\0';
 }
 
-void getNomeTabela(char line[50], char *nome)
+void getNomeTabela(char line[50],char *nome)
 {
-	int i = 0, j = 0, linha = strlen(line);
-	int cont = 0;
-	for (i = 0; i < linha; i++)
+	int i=0,j=0;
+	int cont=0;
+	for(i=0;i<strlen(line);i++)
 	{
-
-		if (cont >= 2 && line[i] != '(' && line[i] != ' ' && line[i] != ';' && line[i] != 10)
+		
+		if(cont >=2 && line[i]!='(' && line[i]!=' ' && line[i]!=';' && line[i]!=10)
 		{
 			nome[j] = line[i];
 			j++;
 		}
-
-		if (line[i] == ' ')
+		
+	
+		if(line[i]==' ')
 			cont++;
+	
+		
 	}
 	nome[j] = '\0';
+
 }
 
-void getTipo(char line[50], char *tipo)
-{
-
-	int i, cont = 0, j = 0, linha = strlen(line);
-	for (i = 0; i < linha; i++)
-	{
-
-		if (line[i] == ' ')
+void getTipo(char line[50],char *tipo){
+	
+	int i,cont=0,j=0;
+	char aux[50];
+	for(i=0;i<strlen(line);i++){
+		
+		if(line[i]== ' ')
 			cont++;
-
-		if (cont >= 2 && line[i] != ',')
+			
+		if(cont >=2 &&  line[i]!= ',')
 		{
 			tipo[j] = line[i];
 			j++;
 		}
+		
+	}
+	tipo[j] = '\0';
+}
+
+void getDado(char dado[],int *cont,char line[])
+{
+	int i,j=0,qtd=0,cont2=0;
+	char flag=0,flag2=1;
+	for(i=0;i<strlen(line) && flag2 ;i++)
+	{
+		if(cont2 >=2)
+		{
+			flag=1;
+			if(flag && line[i]==',')
+				qtd++;
+			
+			if(flag && line[i]!=')' && line[i]!=',' && line[i]!=';' && qtd >= *cont)
+			{
+				dado[j] = line[i];
+				j++;
+			}	
+		
+
+			if(qtd > *cont)
+			{	
+			   	if(line[i]==',' || line[i]==')')
+				{
+					dado[j] ='\0';
+					(*cont)++;
+					flag2=0;
+				}
+			}
+			
+		}
+		
+		if(line[i]=='(')
+			cont2++;
+	}
+}
+void alterTable(char line[50],char nome[],int espaco)
+{
+	int i,cont=0,j=0;
+	for(i=0;i<strlen(line);i++){
+		
+			if(line[i]== ' ')
+				cont++;
+			
+			if(cont >=espaco && cont < espaco+1 && line[i]!=' ')
+			{
+					nome[j] = line[i];
+					j++;
+			}
+	}
+	nome[j] = '\0';
+}
+
+void getColuna(char line[],char *aux,PTabelas**Tab,pontBD*banco)
+{
+	char flag=0;
+	char dados[50],nome[50],test;
+	int i,cont=0,j=0,cont2=0;
+	PCampos*campos = NULL;
+	PTabelas*tabela = NULL;
+	union UDados d;
+	alterTable(line,nome,2);
+    tabela =  buscaTabelaPorNome(banco,nome);
+	for(i=0;i<strlen(line);i++)
+	{
+		if(flag && line[i]!=')' && line[i]!=',' && cont <= 1)
+		{
+			aux[j] = line[i];
+			j++;
+		}	
+		
+		if(line[i]=='(')
+		{
+			flag=1;
+			cont++;
+		}		
+		if(cont==1)
+		{
+			if(line[i]==',' || line[i]==')')
+			{
+				aux[j] = '\0';
+				j=0;
+				if(buscaCampoPorNome(tabela->Pcampos,aux))
+				{
+					getDado(dados,&cont2,line);
+			
+					campos = buscaCampoPorNome(tabela->Pcampos,aux);
+					if(campos->Tipo=='I')
+					{
+						d.ValorI = atoi(dados);
+						CadastrarDadosNaTabela(tabela->Pcampos,'I',d);
+					}
+			
+					if(campos->Tipo=='N')
+					{
+						d.ValorN = atof(dados);
+						CadastrarDadosNaTabela(tabela->Pcampos,'N',d);
+					}
+							
+					if(campos->Tipo=='D')
+					{
+						strcpy(d.ValorD,dados);
+						CadastrarDadosNaTabela(tabela->Pcampos,'D',d);
+					}	
+					if(campos->Tipo=='C')
+					{
+						d.ValorC = dados[0];
+						CadastrarDadosNaTabela(tabela->Pcampos,'C',d);
+					}						
+					if(campos->Tipo=='T')
+					{
+						strcpy(d.ValorT,dados);
+						CadastrarDadosNaTabela(tabela->Pcampos,'T',d);
+					}
+						
+				}	
+				clearString(dados);
+				clearString(aux);
+			}			
+		}		
+		if(line[i]==')')
+			flag=0;
 	}
 }
 
-void lerComandos(pontBD **b)
-{
-	FILE *Arq = fopen("script.txt", "r");
-	char line[50], nome[50], tipo[50], database[50];
 
-	char flag = 0;
-	fgets(line, sizeof(line), Arq);
-	while (!feof(Arq))
+int counter(char comando[]){
+	
+	int i;
+	char flag=0;
+	int cont=0;
+	
+	for(i=0;i<strlen(comando)-1;i++)
 	{
+		if(flag && comando[i]!=')' && comando[i]!=' ')
+			cont++;
+			
+		if(comando[i]=='(')
+			flag=1;
+	
+	}
+	
+	return cont;	
+}
 
-		if (flag && !getComando(line, ");"))
+void lerComandos(pontBD **b,PCampos**campos,PTabelas**Tab)
+{
+	FILE*Arq = fopen("script.txt","r");
+	char line[100],nome[50],tipo[50],database[50],tabela[50],aux[100];
+	char t;
+	
+	char flag=0;
+	fgets(line,sizeof(line),Arq);
+	while(!feof(Arq))
+	{
+		
+		if(flag && !getComando(line,");"))
 		{
 			clearString(nome);
-			// clearString(tipo);
-			getNomeCampo(line, nome);
-			// getTipo(line,tipo);
-			// printf("%s\n",nome);
-		}
+			getNomeCampo(line,nome);
+				
+			getTipo(line,tipo);
+			removeSpace(tipo);
+			if(getComando(tipo,"INTEGER"))
+				t= 'I';
+				
+			if(getComando(tipo,"CHARACTER"))
+			{
+				if(counter(tipo)>=2)
+					t='T';
+				else
+					t='C';
+			}	
+			if(getComando(tipo,"DATE"))
+				t='D';
+			if(getComando(tipo,"NUMERIC"))
+				t='N';
+			
+			if(!getComando(nome,"CONSTRAINT"))
+				CadastrarCampoNaTabela(Tab,tabela,nome,t,'N');
 
-		if (getComando(line, "CREATE TABLE "))
+		}	
+			
+		if(getComando(line,"CREATE TABLE "))
 		{
-			// getNomeTabela(line);
-			flag = 1;
+			getNomeTabela(line,tabela);
+			CadastrarTabela(Tab,tabela);
+			(*b)->PTabelas = *Tab;
+			flag=1;
 		}
-		if (getComando(line, "CREATE DATABASE "))
+		if(getComando(line,"CREATE DATABASE "))
 		{
-			getNomeTabela(line, database);
-			printf("%s", database);
-			CadastrarBanco(b, database);
-		}
-		if (getComando(line, ");"))
+			getNomeTabela(line,database);
+			CadastrarBanco(b,database);
+		}	
+		if(getComando(line,");"))
 		{
-			flag = 0;
+			flag=0;
 		}
-
-		fgets(line, sizeof(line), Arq);
+		
+		if(getComando(line,"ALTER TABLE "))
+		{
+			alterTable(line,nome,6);
+		}
+		
+		if(getComando(line,"insert into"))
+		{
+			alterTable(line,nome,2);
+			getColuna(line,aux,Tab,*b);
+		}
+		
+		fgets(line,sizeof(line),Arq);	
 	}
 	fclose(Arq);
 }
 
-int main()
+int main() 
 {
-    pontBD *banco = NULL;
-
-    // Criar um banco de dados "TestDB"
-    CadastrarBanco(&banco, "TestDB");
-
-    // Criar uma tabela "Usuarios"
-    CadastrarTabela(&(banco->PTabelas), "Usuarios");
-
-    // Criar campos na tabela "Usuarios"
-    CadastrarCampoNaTabela(&(banco->PTabelas), "Usuarios", "ID", 'I', 'S');
-    CadastrarCampoNaTabela(&(banco->PTabelas), "Usuarios", "Nome", 'T', 'N');
-    CadastrarCampoNaTabela(&(banco->PTabelas), "Usuarios", "Idade", 'I', 'N');
-
-    // Inserir alguns dados na tabela "Usuarios"
-    union UDados dado0;
-    dado0.ValorI = 1;
-    CadastrarDadosNaTabela(buscaCampoPorNome(banco->PTabelas->Pcampos, "ID"), 'I', dado0);
-    strcpy(dado0.ValorT, "Alice");
-    CadastrarDadosNaTabela(buscaCampoPorNome(banco->PTabelas->Pcampos, "Nome"), 'T', dado0);
-    dado0.ValorI = 25;
-    CadastrarDadosNaTabela(buscaCampoPorNome(banco->PTabelas->Pcampos, "Idade"), 'I', dado0);
-
-    dado0.ValorI = 2;
-    CadastrarDadosNaTabela(buscaCampoPorNome(banco->PTabelas->Pcampos, "ID"), 'I', dado0);
-    strcpy(dado0.ValorT, "Bob");
-    CadastrarDadosNaTabela(buscaCampoPorNome(banco->PTabelas->Pcampos, "Nome"), 'T', dado0);
-    dado0.ValorI = 30;
-    CadastrarDadosNaTabela(buscaCampoPorNome(banco->PTabelas->Pcampos, "Idade"), 'I', dado0);
-
-    dado0.ValorI = 3;
-    CadastrarDadosNaTabela(buscaCampoPorNome(banco->PTabelas->Pcampos, "ID"), 'I', dado0);
-    strcpy(dado0.ValorT, "Charlie");
-    CadastrarDadosNaTabela(buscaCampoPorNome(banco->PTabelas->Pcampos, "Nome"), 'T', dado0);
-    dado0.ValorI = 35;
-    CadastrarDadosNaTabela(buscaCampoPorNome(banco->PTabelas->Pcampos, "Idade"), 'I', dado0);
-	exibir(banco);
+	char test[50];
+	pontBD *banco = NULL;
+	PCampos*campos = NULL;
+	PTabelas*tabela = NULL;
+	lerComandos(&banco,&campos,&tabela);
 	
+	
+
+	//exibir(banco);
     return 0;
 }

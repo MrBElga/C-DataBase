@@ -149,7 +149,7 @@ void alterTable(char line[50],char nome[],int espaco)
 			if(line[i]== ' ')
 				cont++;
 			
-			if(cont >=espaco && cont < espaco+1 && line[i]!=' ' && line[i]!=';')
+			if(cont >=espaco && cont < espaco+1 && line[i]!=' ')
 			{
 					nome[j] = line[i];
 					j++;
@@ -195,29 +195,29 @@ void getColuna(char line[],char *aux,PTabelas**Tab,pontBD*banco)
 					if(campos->Tipo=='I')
 					{
 						d.ValorI = atoi(dados);
-						CadastrarDadosNaTabela(campos,'I',d);
+						CadastrarDadosNaTabela(tabela->Pcampos,'I',d);
 					}
 			
 					if(campos->Tipo=='N')
 					{
 						d.ValorN = atof(dados);
-						CadastrarDadosNaTabela(campos,'N',d);
+						CadastrarDadosNaTabela(tabela->Pcampos,'N',d);
 					}
 							
 					if(campos->Tipo=='D')
 					{
 						strcpy(d.ValorD,dados);
-						CadastrarDadosNaTabela(campos,'D',d);
+						CadastrarDadosNaTabela(tabela->Pcampos,'D',d);
 					}	
 					if(campos->Tipo=='C')
 					{
 						d.ValorC = dados[0];
-						CadastrarDadosNaTabela(campos,'C',d);
+						CadastrarDadosNaTabela(tabela->Pcampos,'C',d);
 					}						
 					if(campos->Tipo=='T')
 					{
 						strcpy(d.ValorT,dados);
-						CadastrarDadosNaTabela(campos,'T',d);
+						CadastrarDadosNaTabela(tabela->Pcampos,'T',d);
 					}
 						
 				}	
@@ -250,12 +250,12 @@ int counter(char comando[]){
 	return cont;	
 }
 
-
 void lerComandos(pontBD **b,PCampos**campos,PTabelas**Tab)
 {
 	FILE*Arq = fopen("script.txt","r");
 	char line[100],nome[50],tipo[50],database[50],tabela[50],aux[100];
 	char t;
+	
 	char flag=0;
 	fgets(line,sizeof(line),Arq);
 	while(!feof(Arq))
@@ -314,15 +314,6 @@ void lerComandos(pontBD **b,PCampos**campos,PTabelas**Tab)
 		{
 			alterTable(line,nome,2);
 			getColuna(line,aux,Tab,*b);
-		}
-		
-		
-		if(getComando(line,"select *"))
-		{
-			clearString(tabela);
-			alterTable(line,tabela,3);
-			selectAll(*Tab,nome);
-
 		}
 		
 		fgets(line,sizeof(line),Arq);	

@@ -23,4 +23,10 @@ CREATE TABLE veiculo (
  alugado CHARACTER(1) ,
  CONSTRAINT PK_veiculo PRIMARY KEY (id_veiculo)
 );
+
 insert into veiculo (id_veiculo,marca,modelo,placa,alugado) values (1,bmw,x8,2544dd,1);
+insert into veiculo (id_veiculo,marca,modelo,placa,alugado) values (2,porshe,maccan,4785,0);
+select * from veiculo;
+
+
+

@@ -291,6 +291,7 @@ void lerComandos(pontBD **b,PCampos**campos,PTabelas**Tab)
 		if(getComando(line,"CREATE TABLE "))
 		{
 			getNomeTabela(line,tabela);
+			//printf("%s\n",tabela);
 			CadastrarTabela(Tab,tabela);
 			(*b)->PTabelas = *Tab;
 			flag=1;
@@ -337,7 +338,6 @@ int main()
 	PCampos*campos = NULL;
 	PTabelas*tabela = NULL;
 	lerComandos(&banco,&campos,&tabela);
-	
 	
 
 	//exibir(banco);

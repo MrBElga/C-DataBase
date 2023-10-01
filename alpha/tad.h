@@ -487,6 +487,61 @@ void LiberarBanco(pontBD **banco)
     *banco = NULL;
 }
 
+
+PTabelas*buscaTab(PTabelas*tab,char nome[])
+{
+	PTabelas*aux = tab;
+	while(aux!=NULL && strcmp(aux->Tabela,nome)!=0)
+		aux = aux->prox;
+		
+		
+	if(aux !=NULL)
+		return aux;
+	else
+		return NULL;
+}
+
+void selectAll(PTabelas*Tab,char nome[])
+{
+	PTabelas*tabela = buscaTab(Tab,nome);
+	PCampos *campo = NULL;
+    PDados *Dado = NULL;
+    
+	if(tabela!=NULL)
+	{
+		
+		    campo = tabela->Pcampos;
+            while (campo != NULL)
+            {
+                printf("%s\n", campo->Campo);
+                Dado = campo->PAtual;
+                while (Dado != NULL)
+                {
+                
+                    if (campo->Tipo == 'I')
+                    {
+                        printf("%d\n", Dado->UDados.ValorI);
+                    }
+                    else if (campo->Tipo == 'N')
+                    {
+                        printf("%.2f\n", Dado->UDados.ValorN);
+                    }
+                    else if (campo->Tipo == 'T')
+                    {
+                        printf("%s\n", Dado->UDados.ValorT);
+                    }
+                    else if (campo->Tipo == 'C')
+                    {
+                        printf("%c\n", Dado->UDados.ValorC);
+                    }
+                    Dado = Dado->prox;
+                }
+                campo = campo->prox;
+            }
+		
+	}
+}
+
 void exibir(pontBD *banco)
 {
     clrscr(); 

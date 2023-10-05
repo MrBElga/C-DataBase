@@ -3,7 +3,7 @@ union UDados
     int ValorI;
     float ValorN;
     char ValorD[11], ValorC;
-    char ValorT[21];
+    char ValorT[50];
 };
 
 struct PDados
@@ -39,18 +39,26 @@ typedef struct pontBD pontBD;
 // Buscas
 
 // Dados [OK]
-PDados *BuscaDados(PDados *pDados, union UDados nDado)
+int BuscaDados(union UDados nDado,PTabelas*tab)
 {
-    PDados *aux = pDados;
-    while (aux != NULL)
-    {
-        if ((aux->UDados.ValorI == nDado.ValorI) || (aux->UDados.ValorN == nDado.ValorN) || (strcmp(aux->UDados.ValorD, nDado.ValorD) == 0) || (aux->UDados.ValorC == nDado.ValorC) || (strcmp(aux->UDados.ValorT, nDado.ValorT) == 0))
+    PDados *Dado;
+    int cont=0;
+    PCampos*aux = tab->Pcampos;
+ 
+        Dado = aux->PAtual;
+        while (Dado != NULL)
         {
-            return aux;
+        
+            if (aux->Tipo == 'I')
+            {
+            	if(Dado->UDados.ValorI == nDado.ValorI)
+					return cont;	
+       
+            }
+            cont++;
+            Dado = Dado->prox;
         }
-        aux = aux->prox;
-    }
-    return NULL;
+    return -1;;
 }
 
 // Campos [OK]
@@ -259,9 +267,35 @@ void CadastrarDadosNaTabela(PCampos *campos, char Tipo, union UDados nDado)
 
 // Alterar
 // Dados
-void AlterarDado(PDados *pDados, char NovoDado[])
+void AlterarDado(PCampos *pCampos,char NovoDado[], union UDados dados,PTabelas*tab)
 {
-    strcpy(pDados->UDados.ValorT, NovoDado);
+	 PDados*d;
+	 int cont=0,qtd;
+	 qtd = BuscaDados(dados,tab);
+     
+     if(qtd!=-1)
+	{
+		d = pCampos->PAtual;
+		while(cont < qtd)
+		{
+			d = d->prox;
+			cont++;
+		}
+		if(pCampos->Tipo == 'I')
+	    	d->UDados.ValorI = atoi(NovoDado);
+		if(pCampos->Tipo == 'N')
+	    	d->UDados.ValorN = atof(NovoDado);
+	    if(pCampos->Tipo == 'T')
+	    	strcpy(d->UDados.ValorT,NovoDado);
+	    if(pCampos->Tipo == 'D')
+	    	strcpy(d->UDados.ValorD,NovoDado);
+	    if(pCampos->Tipo == 'C')
+	   		 d->UDados.ValorC = NovoDado[0]; 	
+		
+	}
+     	
+     	
+
 }
 
 // Campos
@@ -342,7 +376,7 @@ void ExcluirLinhaCampo(PCampos *campo, union UDados valor, PTabelas *tabela)
         anterior = campo->PAtual;
         campo->PAtual = campo->PAtual->prox;
     }
-    printf("%d \t %d\n", pos, flag);
+    //printf("%d \t %d\n", pos, flag);
     if (flag == 1)
     {
         while (auxC != NULL)
@@ -513,7 +547,9 @@ void selectAll(PTabelas*Tab,char nome[])
 		    campo = tabela->Pcampos;
             while (campo != NULL)
             {
+            	printf("------------------\n");
                 printf("%s\n", campo->Campo);
+                printf("------------------\n");
                 Dado = campo->PAtual;
                 while (Dado != NULL)
                 {
@@ -522,17 +558,21 @@ void selectAll(PTabelas*Tab,char nome[])
                     {
                         printf("%d\n", Dado->UDados.ValorI);
                     }
-                    else if (campo->Tipo == 'N')
+                    if (campo->Tipo == 'N')
                     {
                         printf("%.2f\n", Dado->UDados.ValorN);
                     }
-                    else if (campo->Tipo == 'T')
+                     if (campo->Tipo == 'T')
                     {
                         printf("%s\n", Dado->UDados.ValorT);
                     }
-                    else if (campo->Tipo == 'C')
+                     if (campo->Tipo == 'C')
                     {
                         printf("%c\n", Dado->UDados.ValorC);
+                    }
+                    if(campo->Tipo == 'D')
+                    {
+                    	printf("%s\n", Dado->UDados.ValorD);
                     }
                     Dado = Dado->prox;
                 }

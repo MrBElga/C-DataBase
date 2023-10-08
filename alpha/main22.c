@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <conio2.h>
+#include <windows.h>
 #include "tad.h"
 
 void clearString(char line[])
@@ -358,7 +359,7 @@ void update(char line[],PTabelas**Tab)
 }
 
 
-void lerComandos(pontBD **b,PCampos**campos,PTabelas**Tab)
+void lerComandos(pontBD **b,PCampos**campos,PTabelas**Tab,char caminho[])
 {
 	FILE*Arq = fopen("script.txt","r");
 	PTabelas*TabAux;
@@ -486,13 +487,130 @@ void lerComandos(pontBD **b,PCampos**campos,PTabelas**Tab)
 	fclose(Arq);
 }
 
+char Menu(pontBD *banco)
+{
+
+	clrscr();
+	
+	desenhar(60,5,120,20);
+	desenhar(61,6,119,8);
+	desenhar(61,9,119,19);
+	desenhar(120,5,140,20);
+	desenhar(121,7,139,12);
+	gotoxy(120,5);
+	printf("%c",194);
+	gotoxy(120,20);
+	printf("%c",193);
+ 
+	textcolor(RED);
+	gotoxy(85,4);
+	printf("DINAMICO-C-SGBD");
+	gotoxy(85,7);
+	textcolor(RED);
+	printf("## ");
+	textcolor(WHITE);
+	printf("MENU ");
+	textcolor(RED);
+	printf("##");
+	gotoxy(62,11);
+	textcolor(BLUE);
+	printf("[1]");
+	textcolor(RED);
+	printf("   - ");
+	textcolor(WHITE);
+	printf("DIGITAR COMANDO SQL");
+	gotoxy(62,13);
+	textcolor(BLUE);
+	printf("[2]");
+	textcolor(RED);
+	printf("   - ");
+	textcolor(WHITE);
+	printf("DIGITAR CAMINHO PARA BOLOCO DE NOTAS");
+	gotoxy(62,15);
+	textcolor(BLUE);
+	printf("[ESC]");
+	textcolor(RED);
+	printf(" - ");
+	textcolor(WHITE);
+	printf("SAIR");
+
+	
+	if(banco==NULL)
+	{
+		gotoxy(122,6);
+		textcolor(WHITE);
+		printf("Banco: ");
+		
+		gotoxy(122,8);
+		textcolor(RED);
+		printf("SEM BANCO");
+	}
+	else
+	{
+		gotoxy(122,6);
+		textcolor(WHITE);
+		printf("Banco: ");
+		gotoxy(122,8);
+		textcolor(GREEN);
+		printf("%s",banco->Banco_Dados);
+	}
+	gotoxy(62,17);
+	textcolor(GREEN);
+	printf("opcao: ");
+	
+	textcolor(WHITE);
+
+	return getche();
+}
+
+
+
 int main() 
 {
-	char test[50];
+	system("mode con:cols=200 lines=80"); 
+	SetConsoleTitle("DINAMICO-C-SGBD");
+	int cor = DARKGRAY;
+	char test[50],op,caminho[50],comando[100];
+	
+	pintarFundo(cor,200,80);
+	 
+	
 	pontBD *banco = NULL;
 	PCampos*campos = NULL;
 	PTabelas*tabela = NULL;
-	lerComandos(&banco,&campos,&tabela);
 
+	do{
+		op = Menu(banco);
+		switch(op)
+		{
+			case '1':
+				clrscr();
+				desenhar(60,5,150,20);
+				desenhar(61,10,149,12);
+				gotoxy(62,9);
+				textcolor(RED);
+				printf("Digite o comando: ");
+				textcolor(WHITE);
+				gotoxy(62,11);
+				gets(comando);
+				getch();
+				break;
+			case '2':
+				clrscr();
+				desenhar(60,5,150,20);
+				desenhar(61,10,149,12);
+				gotoxy(62,9);
+				textcolor(RED);
+				printf("Digite o caminho: ");
+				textcolor(WHITE);
+				gotoxy(62,11);
+				gets(caminho);
+				lerComandos(&banco,&campos,&tabela,caminho);
+				break;
+		}
+	
+	}while(op!=27);
+	
+	exibir(banco);
     return 0;
 }

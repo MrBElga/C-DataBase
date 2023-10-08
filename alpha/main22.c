@@ -489,14 +489,12 @@ void lerComandos(pontBD **b,PCampos**campos,PTabelas**Tab,char caminho[])
 
 char Menu(pontBD *banco)
 {
-
+	int i =0;
+	PTabelas *tabelas=NULL;
 	clrscr();
 	
-	desenhar(60,5,120,20);
-	desenhar(61,6,119,8);
-	desenhar(61,9,119,19);
-	desenhar(120,5,140,20);
-	desenhar(121,7,139,12);
+	
+
 	gotoxy(120,5);
 	printf("%c",194);
 	gotoxy(120,20);
@@ -534,26 +532,65 @@ char Menu(pontBD *banco)
 	textcolor(WHITE);
 	printf("SAIR");
 
-	
+	gotoxy(122,6);
+	textcolor(WHITE);
+	printf("Banco: ");
+		
+	gotoxy(122,13);
+	printf("Tabelas");
 	if(banco==NULL)
 	{
-		gotoxy(122,6);
-		textcolor(WHITE);
-		printf("Banco: ");
+	
 		
 		gotoxy(122,8);
 		textcolor(RED);
 		printf("SEM BANCO");
+		gotoxy(122,15);;
+		printf("SEM TABELAS");
 	}
 	else
 	{
-		gotoxy(122,6);
-		textcolor(WHITE);
-		printf("Banco: ");
+	
 		gotoxy(122,8);
 		textcolor(GREEN);
 		printf("%s",banco->Banco_Dados);
+
+		if(banco->PTabelas!=NULL)
+		{
+			i=15;
+			tabelas=banco->PTabelas;
+			while(tabelas && i <19)
+			{
+				gotoxy(122,i);
+				printf("%s",tabelas->Tabela);
+				tabelas = tabelas->prox;
+				i++;
+			}
+			if(i==19)
+			{
+				gotoxy(122,i-1);
+				printf("                 ");
+				gotoxy(122,i-1);
+				printf("...");
+			}
+		
+		}
+		else
+		{
+			gotoxy(123,15);
+			textcolor(RED);
+			printf("SEM TABELAS");
+		}
+			
+			
 	}
+	textcolor(BLACK);
+	desenhar(60,5,120,20);
+	desenhar(61,6,119,8);
+	desenhar(61,9,119,19);
+	desenhar(120,5,140,20);
+	desenhar(121,14,139,19);
+	desenhar(121,7,139,12);
 	gotoxy(62,17);
 	textcolor(GREEN);
 	printf("opcao: ");

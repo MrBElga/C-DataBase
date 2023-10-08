@@ -127,10 +127,12 @@ UPDATE peca SET estoque = 15 WHERE id_peca = 10;
 
 UPDATE peca SET estoque = 3 WHERE id_peca = 4;
 
-DELETE FROM veiculo WHERE id_veiculo = 2;
 
 SELECT * FROM veiculo;     
 
+SELECT * FROM peca WHERE id_peca BETWEEN 5 AND 10;
+
+SELECT * FROM servico;  
 
 
 

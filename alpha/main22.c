@@ -1,4 +1,3 @@
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -10,6 +9,27 @@ void clearString(char line[])
 	int i;
 	for(i=0;i<strlen(line);i++)
 		line[i] =' ';
+}
+
+void remover(char line[])
+{
+	int i,j=0;
+	int cont =0;
+	for(i=0;i<strlen(line);i++)
+	{
+		if(cont >=1)
+		{
+			line[j] = line[i];
+			j++;
+		}
+		
+		
+		if(line[i]==' ')
+			cont++;
+		
+			
+	}
+	line[j] = '\0';
 }
 
 void removeSpace(char *tipo){
@@ -76,13 +96,10 @@ void getNomeTabela(char line[50],char *nome)
 		{
 			nome[j] = line[i];
 			j++;
-		}
-		
-	
+		}	
 		if(line[i]==' ')
 			cont++;
 	
-		
 	}
 	nome[j] = '\0';
 
@@ -142,6 +159,7 @@ void getDado(char dado[],int *cont,char line[])
 			cont2++;
 	}
 	dado[j] = '\0';
+	
 }
 void alterTable(char line[50],char nome[],int espaco)
 {
@@ -220,7 +238,7 @@ void getColuna(char line[],char *aux,PTabelas**Tab,pontBD*banco)
 					}						
 					if(campos->Tipo=='T')
 					{
-						removeSpace(dados);
+						remover(dados);
 						strcpy(d.ValorT,dados);
 						CadastrarDadosNaTabela(campos,'T',d);
 					}
@@ -347,7 +365,9 @@ void lerComandos(pontBD **b,PCampos**campos,PTabelas**Tab)
 	PCampos*CampoAux;
 	union UDados dadosAux;
 	char line[200],nome[50],tipo[50],database[50],tabela[50],aux[100],nomeCampo[50];
+	char comando[50];
 	char t;
+	int v1,v2;
 	char flag=0;
 	fgets(line,sizeof(line),Arq);
 	while(!feof(Arq))
@@ -412,7 +432,26 @@ void lerComandos(pontBD **b,PCampos**campos,PTabelas**Tab)
 		if(getComando(line,"SELECT *"))
 		{
 			alterTable(line,tabela,3);
-			selectAll(*Tab,tabela);
+			alterTable(line,comando,6);
+			if(strcmp(comando,"BETWEEN")==0)
+			{
+				alterTable(line,comando,contaEspaco(line)-2);
+				v1 = atoi(comando);
+				alterTable(line,comando,contaEspaco(line));
+				v2 = atoi(comando);
+				alterTable(line,comando,(contaEspaco(line)-contaEspaco(line))+5);
+				selectBet(*Tab,v1,v2,tabela,comando);
+				getch();
+				system("cls");
+			}
+			clearString(comando);
+			alterTable(line,comando,6);
+			if(strcmp(comando,"BETWEEN")!=0)
+			{
+				selectAll(*Tab,tabela);
+				getch();
+				system("cls");
+			}
 
 		}
 		if(getComando(line,"DELETE"))
@@ -439,7 +478,6 @@ void lerComandos(pontBD **b,PCampos**campos,PTabelas**Tab)
 		
 		if(getComando(line,"UPDATE"))
 		{
-			
 			update(line,Tab);
 		}
 		fgets(line,sizeof(line),Arq);	
@@ -455,8 +493,6 @@ int main()
 	PCampos*campos = NULL;
 	PTabelas*tabela = NULL;
 	lerComandos(&banco,&campos,&tabela);
-	
 
-	//exibir(banco);
     return 0;
 }

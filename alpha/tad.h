@@ -582,6 +582,61 @@ void selectAll(PTabelas*Tab,char nome[])
 	}
 }
 
+void selectBet(PTabelas*Tab, int v1,int v2, char nome[],char campoNome[])
+{
+	PTabelas*tabela = buscaTab(Tab,nome);
+	PCampos *campo = tabela->Pcampos;
+    PDados *Dado,*aux;
+    PCampos *campoAux = buscaCampoPorNome(campo,campoNome);
+    
+    if(tabela!=NULL)
+    {
+			campo = tabela->Pcampos;
+            while (campo != NULL)
+            {
+            	printf("------------------\n");
+                printf("%s\n", campo->Campo);
+                printf("------------------\n");
+                Dado = campo->PAtual;
+                aux = campoAux->PAtual;
+                while(Dado!=NULL)
+                {
+                	if(aux->UDados.ValorI >= v1 && aux->UDados.ValorI <= v2)
+                	{
+                		               
+	                    if (campo->Tipo == 'I')
+	                    {
+	                        printf("%d\n", Dado->UDados.ValorI);
+	                    }
+	                    if (campo->Tipo == 'N')
+	                    {
+	                        printf("%.2f\n", Dado->UDados.ValorN);
+	                    }
+	                     if (campo->Tipo == 'T')
+	                    {
+	                        printf("%s\n", Dado->UDados.ValorT);
+	                    }
+	                     if (campo->Tipo == 'C')
+	                    {
+	                        printf("%c\n", Dado->UDados.ValorC);
+	                    }
+	                    if(campo->Tipo == 'D')
+	                    {
+	                    	printf("%s\n", Dado->UDados.ValorD);
+	                    }
+                		
+                	}
+                	aux = aux->prox;
+                	Dado = Dado->prox;
+                }
+                
+                campo = campo->prox;
+            }
+ 			
+	
+    }
+}
+
 void exibir(pontBD *banco)
 {
     clrscr(); 

@@ -559,19 +559,19 @@ char Menu(pontBD *banco)
 		{
 			i=15;
 			tabelas=banco->PTabelas;
-			while(tabelas && i <19)
+			while(tabelas!=NULL)
 			{
 				gotoxy(122,i);
 				printf("%s",tabelas->Tabela);
 				tabelas = tabelas->prox;
 				i++;
 			}
-			if(i==19)
+			if(i>19)
 			{
-				gotoxy(122,i-1);
+				gotoxy(122,18);
 				printf("                 ");
-				gotoxy(122,i-1);
-				printf("...");
+				gotoxy(122,18);
+				printf("+%d",i-18);
 			}
 		
 		}

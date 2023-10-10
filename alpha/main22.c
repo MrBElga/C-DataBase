@@ -358,11 +358,71 @@ void update(char line[],PTabelas**Tab)
 	}
 }
 
+void getForeign(char line[], char campo[])
+{
+	int i,j=0,cont=0;
+	char flag=0;
+	
+	for(i=0;i<strlen(line);i++)
+	{
+		
+		if(flag && cont  == 1) 
+		{
+			if(line[i]!=' ' && line[i]!=')')
+			{
+				campo[j] = line[i];
+				j++; 
+			}
+			
+		}
+		if(line[i]==')')
+			flag=0;
+		
+		if(line[i]=='(')
+		{
+			flag=1;
+			cont++;
+		}
+		
+	}
+	campo[j] = '\0';
+}
+
+void updatePK(char line[], char tabela[],PTabelas**tab)
+{
+	int i,j=0;
+	char flag=0,aux[50];
+	PCampos*campo = NULL;
+	PTabelas*tabAux = buscaTab(*tab,tabela);
+	for(i=0;i<strlen(line);i++)
+	{
+		
+		if(line[i]!=' ' && line[i]!=',')
+		{
+			aux[j] = line[i];
+			j++;
+		}
+		
+		if(line[i]==',')
+		{
+			aux[j] = '\0';
+			campo = buscaCampoPorNome(tabAux->Pcampos,aux);
+			if(campo)
+				campo->PK = 'S';
+			j=0;	
+		}
+			
+	}
+	aux[j] = '\0';
+	campo = buscaCampoPorNome(tabAux->Pcampos,aux);
+	if(campo)
+		campo->PK = 'S';
+}
 
 void lerComandos(pontBD **b,PCampos**campos,PTabelas**Tab,char caminho[],char f)
 {
 	FILE*Arq=NULL;
-	PTabelas*TabAux;
+	PTabelas*TabAux,*alterAux=NULL;
 	PCampos*CampoAux;
 	union UDados dadosAux;
 	char line[200],nome[50],tipo[50],database[50],tabela[50],aux[100],nomeCampo[50];
@@ -417,6 +477,11 @@ void lerComandos(pontBD **b,PCampos**campos,PTabelas**Tab,char caminho[],char f)
 			
 			if(!getComando(nome,"CONSTRAINT"))
 				CadastrarCampoNaTabela(Tab,tabela,nome,t,'N');
+			else
+			{
+				getForeign(line,nome);
+				updatePK(nome,tabela,Tab);
+			}
 
 		}	
 			
@@ -441,7 +506,26 @@ void lerComandos(pontBD **b,PCampos**campos,PTabelas**Tab,char caminho[],char f)
 		{
 			alterTable(line,nome,6);
 		}
-		
+		if(getComando(line,"    FOREIGN"))
+		{
+			alterAux = buscaTabelaPorNome(*b,nome);
+			if(alterAux)
+			{
+				getForeign(line,nome);
+				CampoAux = buscaCampoPorNome(alterAux->Pcampos,nome);
+				if(CampoAux)
+				{
+					alterTable(line,tabela,8);
+					alterAux = buscaTabelaPorNome(*b,tabela);
+					if(alterAux)
+					{
+						if(buscaCampoPorNome(alterAux->Pcampos,nome))
+							CampoAux->FK = buscaCampoPorNome(alterAux->Pcampos,nome);
+					}
+					
+				}
+			}
+		}
 		if(getComando(line,"INSERT INTO"))
 		{
 			alterTable(line,nome,2);

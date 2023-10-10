@@ -1,0 +1,70 @@
+CREATE DATABASE db_oficina;
+
+CREATE TABLE veiculo (
+    id_veiculo INTEGER   NOT NULL,
+    marca CHARACTER(20) ,
+    modelo CHARACTER(20) ,
+    dono CHARACTER(20) ,
+    placa CHARACTER(20) ,
+    combustivel CHARACTER(1) ,
+    ano INTEGER ,
+    chassi CHARACTER(20) ,
+    CONSTRAINT PK_veiculo PRIMARY KEY (id_veiculo)
+);
+
+CREATE TABLE ordem_servico (
+    id_os INTEGER   NOT NULL,
+    id_veiculo INTEGER ,
+    km_entrada INTEGER ,
+    data_entrada DATE ,
+    hora_entrada CHARACTER(20) ,
+    data_saida DATE ,
+    hora_saida CHARACTER(20) ,
+    valor_total NUMERIC(6,2) ,
+    CONSTRAINT PK_ordem_servico PRIMARY KEY (id_os)
+);
+
+CREATE TABLE os_servico (
+    id_os INTEGER   NOT NULL,
+    id_servico INTEGER   NOT NULL,
+    valor NUMERIC(6,2) ,
+    CONSTRAINT PK_os_servico PRIMARY KEY (id_os, id_servico)
+);
+
+CREATE TABLE servico (
+    id_servico INTEGER   NOT NULL,
+    descricao CHARACTER(20) ,
+    valor NUMERIC(6,2) ,
+    CONSTRAINT PK_servico PRIMARY KEY (id_servico)
+);
+
+CREATE TABLE os_peca (
+    id_os INTEGER   NOT NULL,
+    id_peca INTEGER   NOT NULL,
+    quantidade INTEGER ,
+    valor NUMERIC(6,2) ,
+    CONSTRAINT PK_os_peca PRIMARY KEY (id_os, id_peca)
+);
+
+CREATE TABLE peca (
+    id_peca INTEGER   NOT NULL,
+    descricao CHARACTER(20) ,
+    valor NUMERIC(6,2) ,
+    estoque INTEGER ,
+    CONSTRAINT PK_peca PRIMARY KEY (id_peca)
+);
+
+ALTER TABLE ordem_servico ADD CONSTRAINT veiculo_ordem_servico 
+    FOREIGN KEY (id_veiculo) REFERENCES veiculo (id_veiculo);
+
+ALTER TABLE os_servico ADD CONSTRAINT ordem_servico_os_servico 
+    FOREIGN KEY (id_os) REFERENCES ordem_servico (id_os);
+
+ALTER TABLE os_servico ADD CONSTRAINT servico_os_servico 
+    FOREIGN KEY (id_servico) REFERENCES servico (id_servico);
+
+ALTER TABLE os_peca ADD CONSTRAINT ordem_servico_os_peca 
+    FOREIGN KEY (id_os) REFERENCES ordem_servico (id_os);
+
+ALTER TABLE os_peca ADD CONSTRAINT peca_os_peca 
+    FOREIGN KEY (id_peca) REFERENCES peca (id_peca);

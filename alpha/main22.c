@@ -359,9 +359,9 @@ void update(char line[],PTabelas**Tab)
 }
 
 
-void lerComandos(pontBD **b,PCampos**campos,PTabelas**Tab,char caminho[])
+void lerComandos(pontBD **b,PCampos**campos,PTabelas**Tab,char caminho[],char f)
 {
-	FILE*Arq = fopen("script.txt","r");
+	FILE*Arq=NULL;
 	PTabelas*TabAux;
 	PCampos*CampoAux;
 	union UDados dadosAux;
@@ -370,8 +370,26 @@ void lerComandos(pontBD **b,PCampos**campos,PTabelas**Tab,char caminho[])
 	char t;
 	int v1,v2;
 	char flag=0;
-	fgets(line,sizeof(line),Arq);
-	while(!feof(Arq))
+	
+	if(f==1)
+	{
+		Arq = fopen(caminho,"r");
+		fgets(line,sizeof(line),Arq);
+	}
+	else
+	{
+			clrscr();
+			desenhar(60,5,150,20);
+			desenhar(61,10,149,12);
+			gotoxy(62,9);
+			textcolor(RED);
+			printf("Digite o comando: ");
+			textcolor(WHITE);
+			gotoxy(62,11);
+			gets(line);
+	}
+
+	while((!feof(Arq) && Arq!=NULL) || strcmp(line,"\0")!=0)
 	{
 		
 		if(flag && !getComando(line,");"))
@@ -481,7 +499,23 @@ void lerComandos(pontBD **b,PCampos**campos,PTabelas**Tab,char caminho[])
 		{
 			update(line,Tab);
 		}
-		fgets(line,sizeof(line),Arq);	
+		
+		if(f==1)
+			fgets(line,sizeof(line),Arq);
+		else
+		{
+			clrscr();
+			desenhar(60,5,150,20);
+			desenhar(61,10,149,12);
+			gotoxy(62,9);
+			textcolor(RED);
+			printf("Digite o comando: ");
+			textcolor(WHITE);
+			gotoxy(62,11);
+			gets(line);
+		}
+		if(feof(Arq))
+			strcpy(line,"\0");
 	}
 	
 	fclose(Arq);
@@ -492,14 +526,7 @@ char Menu(pontBD *banco)
 	int i =0;
 	PTabelas *tabelas=NULL;
 	clrscr();
-	
-	
 
-	gotoxy(120,5);
-	printf("%c",194);
-	gotoxy(120,20);
-	printf("%c",193);
- 
 	textcolor(RED);
 	gotoxy(85,4);
 	printf("DINAMICO-C-SGBD");
@@ -525,7 +552,7 @@ char Menu(pontBD *banco)
 	textcolor(WHITE);
 	printf("DIGITAR CAMINHO PARA BOLOCO DE NOTAS");
 	gotoxy(62,15);
-	textcolor(BLUE);
+	textcolor(BLUE);;
 	printf("[ESC]");
 	textcolor(RED);
 	printf(" - ");
@@ -585,12 +612,25 @@ char Menu(pontBD *banco)
 			
 	}
 	textcolor(BLACK);
+	//borda externa
 	desenhar(60,5,120,20);
+	//borda interna Banco
 	desenhar(61,6,119,8);
+	//borda Interna
 	desenhar(61,9,119,19);
+	//borda externa dir
 	desenhar(120,5,140,20);
+	//borda interna dir 
 	desenhar(121,14,139,19);
+	//borda interna tabelas
 	desenhar(121,7,139,12);
+	//juntas 
+	gotoxy(120,5);
+	printf("%c",194);
+	gotoxy(120,20);
+	printf("%c",193);
+ 
+	
 	gotoxy(62,17);
 	textcolor(GREEN);
 	printf("opcao: ");
@@ -600,14 +640,12 @@ char Menu(pontBD *banco)
 	return getche();
 }
 
-
-
 int main() 
 {
 	system("mode con:cols=200 lines=80"); 
 	SetConsoleTitle("DINAMICO-C-SGBD");
 	int cor = DARKGRAY;
-	char test[50],op,caminho[50],comando[100];
+	char test[50],op,op2,caminho[50];
 	
 	pintarFundo(cor,200,80);
 	 
@@ -621,15 +659,7 @@ int main()
 		switch(op)
 		{
 			case '1':
-				clrscr();
-				desenhar(60,5,150,20);
-				desenhar(61,10,149,12);
-				gotoxy(62,9);
-				textcolor(RED);
-				printf("Digite o comando: ");
-				textcolor(WHITE);
-				gotoxy(62,11);
-				gets(comando);
+				lerComandos(&banco,&campos,&tabela,"",0);
 				getch();
 				break;
 			case '2':
@@ -642,10 +672,9 @@ int main()
 				textcolor(WHITE);
 				gotoxy(62,11);
 				gets(caminho);
-				lerComandos(&banco,&campos,&tabela,caminho);
+				lerComandos(&banco,&campos,&tabela,caminho,1);
 				break;
 		}
-	
 	}while(op!=27);
 	
 	exibir(banco);

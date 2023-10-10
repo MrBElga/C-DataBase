@@ -1,3 +1,6 @@
+//102113149 -  Daniel ELias Fonseca Rumin
+//102012253 - Thales Jorge da silva
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -419,6 +422,69 @@ void updatePK(char line[], char tabela[],PTabelas**tab)
 		campo->PK = 'S';
 }
 
+void getColunaSelect(char line[],PTabelas*tab,char condicao)
+{
+	int i,j=0;
+	int v1,v2;
+	int cont=0,virgula=0;
+	char aux[50],tabela[50],valor[50];
+	
+	
+	for(i=0;i<strlen(line);i++)
+	{
+		
+		if(line[i]==',')
+			virgula++;
+	}
+	
+	alterTable(line,tabela,virgula+3);
+	for(i=0;i<strlen(line);i++)
+	{
+		if(cont >=1 && line[i]!=' ' && line[i]!=',')
+		{
+			aux[j] = line[i];
+			j++;
+		}
+		
+		if(line[i]==' ')
+			cont++;
+			
+		if(line[i]==',' || line[i+1] == 'F')
+		{
+			aux[j] = '\0';
+			j = 0;
+			if(condicao == 'N')
+				selectProjecao(tabela,tab,aux);
+			
+			if(condicao == 'S')
+			{
+				alterTable(line,valor,contaEspaco(line)-3);
+				v1 = atoi(valor);
+				alterTable(line,valor,contaEspaco(line)-1);
+				v2 = atoi(valor);
+				alterTable(line,valor,contaEspaco(line)-5);
+				ProjecaoBet(tab,v1,v2,tabela,valor,aux);
+			}
+			
+		}
+	}
+
+}
+
+int contaVirgula(char line[])
+{
+	int cont=0;
+	int i;
+	for(i=0;i<strlen(line);i++)
+	{
+		if(line[i]==',')
+			cont++;
+	}
+	
+	return cont;
+}
+
+
 void lerComandos(pontBD **b,PCampos**campos,PTabelas**Tab,char caminho[],char f)
 {
 	FILE*Arq=NULL;
@@ -544,18 +610,37 @@ void lerComandos(pontBD **b,PCampos**campos,PTabelas**Tab,char caminho[],char f)
 				v2 = atoi(comando);
 				alterTable(line,comando,(contaEspaco(line)-contaEspaco(line))+5);
 				selectBet(*Tab,v1,v2,tabela,comando);
-				getch();
-				system("cls");
+			
+	
 			}
 			clearString(comando);
 			alterTable(line,comando,6);
 			if(strcmp(comando,"BETWEEN")!=0)
 			{
 				selectAll(*Tab,tabela);
-				getch();
+		
+			
+			}
+		
+
+		}
+		alterTable(line,comando,1);
+		if(getComando(line,"SELECT ") && strcmp(comando,"*")!=0)
+		{
+			alterTable(line,comando,contaVirgula(line)+6);
+				
+			if(strcmp(comando,"BETWEEN")!=0)
+			{
+				getColunaSelect(line,*Tab,'N');
+				system("cls");
+						
+			}
+			else
+			{
+				getColunaSelect(line,*Tab,'S');
 				system("cls");
 			}
-
+	
 		}
 		if(getComando(line,"DELETE"))
 		{

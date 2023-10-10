@@ -1,0 +1,2 @@
+C:\Users\Aluno\Desktop\C-DataBase\script\scriptdboficina.txt
+C:\Users\Aluno\Desktop\C-DataBase\script\scriptInsert.txt

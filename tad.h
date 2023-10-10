@@ -734,6 +734,117 @@ void selectBet(PTabelas* Tab, int v1, int v2, char nome[], char campoNome[])
     getch();
 }
 
+void ProjecaoBet(PTabelas* Tab, int v1, int v2,char tabelaNome[],char campoCondi[],char campoNome[])
+{
+	
+	textcolor(BLACK);
+	PTabelas* tabela = buscaTab(Tab,tabelaNome);
+    PCampos* campo = tabela->Pcampos;
+    PDados* Dado, * aux;
+    PCampos* campoAux = buscaCampoPorNome(campo, campoCondi);
+    clrscr();
+    if (tabela != NULL)
+    {
+        campo = tabela->Pcampos;
+        while (campo != NULL)
+        {
+        	if(strcmp(campo->Campo,campoNome)==0)
+        	{
+        		 printf("%s\n",campo->Campo);
+        		 Dado = campo->PAtual;
+            	 aux = campoAux->PAtual;
+            	 while(Dado!=NULL)
+                {
+                	if(aux->UDados.ValorI >= v1 && aux->UDados.ValorI <= v2)
+                	{
+                		               
+	                    if (campo->Tipo == 'I')
+	                    {
+	                        printf("%d\n", Dado->UDados.ValorI);
+	                    }
+	                    if (campo->Tipo == 'N')
+	                    {
+	                        printf("%.2f\n", Dado->UDados.ValorN);
+	                    }
+	                     if (campo->Tipo == 'T')
+	                    {
+	                        printf("%s\n", Dado->UDados.ValorT);
+	                    }
+	                     if (campo->Tipo == 'C')
+	                    {
+	                        printf("%c\n", Dado->UDados.ValorC);
+	                    }
+	                    if(campo->Tipo == 'D')
+	                    {
+	                    	printf("%s\n", Dado->UDados.ValorD);
+	                    }
+                		
+                	}
+                	aux = aux->prox;
+                	Dado = Dado->prox;
+                }
+        	}
+        	campo = campo->prox;
+        }
+        
+    }
+    getch();
+}
+
+void selectProjecao(char tabela[],PTabelas*tab,char campo[])
+{
+	
+	PTabelas*aux = buscaTab(tab,tabela);
+	PCampos*campos;
+	PDados*Dado;
+	textcolor(BLACK);
+	clrscr();
+	if(aux)
+	{
+		campos = aux->Pcampos;
+		
+		while(campos!=NULL)
+		{
+			
+			if(strcmp(campos->Campo,campo)==0)
+			{
+				printf("---------------------\n");
+				printf("%s\n",campos->Campo);
+				printf("---------------------\n");
+				Dado = campos->PAtual;
+				while(Dado!=NULL)
+				{
+				   if (campos->Tipo == 'I')
+                    {
+                        printf("%d\n", Dado->UDados.ValorI);
+                    }
+                    else if (campos->Tipo == 'N')
+                    {
+                        printf("%.2f\n", Dado->UDados.ValorN);
+                    }
+                    else if (campos->Tipo == 'T')
+                    {
+                        printf("%s\n", Dado->UDados.ValorT);
+                    }
+                    else if (campos->Tipo == 'C')
+                    {
+                        printf("%c\n", Dado->UDados.ValorC);
+                    }
+                    else if (campos->Tipo == 'D')
+                    {
+                        printf("%s\n", Dado->UDados.ValorD);
+                    }
+					
+					
+					
+					Dado = Dado->prox;
+				}
+			}
+			campos = campos->prox;
+		}
+	}
+	getch();
+}
 
 void exibir(pontBD *banco)
 {
@@ -801,6 +912,12 @@ void exibir(pontBD *banco)
                         printf("%c", Dado->UDados.ValorC);
                         i++;
                  
+                    }
+                    else if (campo->Tipo == 'D')
+                    {
+                        printf("%s", Dado->UDados.ValorD);
+                        i++;
+              
                     }
                 
 		        	
